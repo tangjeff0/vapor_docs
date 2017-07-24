@@ -4,6 +4,7 @@
   "description": "A minimal Electron application with React and Express",
   "main": "main.js",
   "scripts": {
+    "dev": "concurrently -k \"npm run devWebpack\" \"npm run devApp\" \"npm run devServer\"",
     "devWebpack": "webpack-dev-server --content-base build/",
     "devApp": "electron main.js --dev",
     "devServer": "nodemon --watch backend backend/server.js",
@@ -21,11 +22,15 @@
     "babel-loader": "^7.1.1",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
+    "concurrently": "^3.5.0",
     "electron": "~1.6.2",
     "loglevel": "^1.4.1",
     "nodemon": "^1.11.0",
     "webpack": "^2.7.0",
-    "webpack-dev-server": "^2.6.0"
+    "webpack-dev-server": "^2.6.0",
+    "babel-eslint": "^6.1.0",
+    "eslint": "^3.0.1",
+    "eslint-plugin-react": "^5.2.2"
   },
   "dependencies": {
     "express": "^4.15.3",

@@ -1,0 +1,35 @@
+
+{
+  "ecmaFeatures": {
+    "jsx": true,
+    "modules": true
+  },
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "parser": "babel-eslint",
+  "extends": "eslint:recommended",
+  "rules": {
+    "linebreak-style": [2, "unix"],
+    "default-case": 2,
+    "indent": [1, 2],
+    "no-unexpected-multiline": 2,
+    "semi": ["error", "always"],
+    "consistent-return": 2,
+    "no-fallthrough": 2,
+    "default-case": 2,
+    "no-console": 0,
+    "quotes": 0,
+    "guard-for-in": 2,
+    "no-unused-vars": [2, { "args": "none", "vars": "local"}],
+    "eqeqeq": 2,
+    "no-native-reassign": 2,
+    "react/jsx-uses-react": 2,
+    "react/jsx-uses-vars": 2,
+    "react/react-in-jsx-scope": 2
+  },
+  "plugins": [
+    "react"
+  ]
+}
