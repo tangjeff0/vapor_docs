@@ -31,11 +31,9 @@ module.exports = (passport) => {
       collaborators: [req.user],
     })
       .then(resp => {
-        /* console.log('\nPOST /doc/new successful', resp, req.user); */
         res.json({doc: resp});
       })
       .catch(err => {
-        console.log('\nPOST /doc/new unsuccessful :(');
         res.json({error_message: err});
       });
   });
@@ -43,10 +41,11 @@ module.exports = (passport) => {
   router.get('/doc', (req, res) => {
     Doc.find().sort({last_edited: -1})
       .then(resp => {
-        console.log('\nPOST /doc/new successful');
+        res.json({docs: resp});
+        /* console.log('\nPOST /doc/new successful'); */
       })
       .catch(err => {
-        console.log('\nPOST /doc/new unsuccessful :(');
+        /* console.log('\nPOST /doc/new unsuccessful :('); */
       });
   });
 

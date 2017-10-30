@@ -57,7 +57,7 @@ describe('Create a new Doc while logged in', () => {
   });
 
   describe('create a doc', () => {
-    it('should create a doc with the logged in user as creator', (done) => {
+    it('should create a doc with the logged in user as the first collaborator', (done) => {
       agent
         .post('/doc/new')
         .send({
@@ -67,6 +67,17 @@ describe('Create a new Doc while logged in', () => {
           expect(res.body.doc).to.be.an('object');
           expect(res.body.doc).to.have.property('title', 'untitled');
           expect(res.body.doc.collaborators).to.be.an('array').with.length(1);
+          done();
+        });
+    });
+  });
+
+  describe('get all docs', () => {
+    it('should return an array of 1 doc', (done) => {
+      agent
+        .get('/doc')
+        .end((err, res) => {
+          expect(res.body.docs).to.be.an('array').with.length(1);
           done();
         });
     });
