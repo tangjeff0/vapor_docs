@@ -24,7 +24,7 @@ class FontSizeDropDown extends React.Component {
   render() {
     return (
       <Dropdown trigger={
-  <div onMouseDown={(e) => e.preventDefault()} style={{display: 'inline-block'}}>{this.state.selectedSize}<Icon right style={{marginTop:'-2px', marginLeft: '0'}}>arrow_drop_down</Icon></div>
+  <div onMouseDown={(e) => e.preventDefault()} style={{display: 'inline-block', marginLeft: '15px'}}>{this.state.selectedSize}<Icon right className="dropdown-icon">arrow_drop_down</Icon></div>
   }>
       {FONT_SIZES.map(style => {
         if(style.label ==='Small') {

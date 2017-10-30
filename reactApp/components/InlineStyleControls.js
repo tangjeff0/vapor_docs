@@ -6,13 +6,14 @@ var INLINE_STYLES = [
   {label: 'Bold', style: 'BOLD'},
   {label: 'Italic', style: 'ITALIC'},
   {label: 'Underline', style: 'UNDERLINE'}
+
 ];
 
 
 const InlineStyleControls = (props) => {
   var currentStyle = props.editorState.getCurrentInlineStyle();
   return (
-    <div className="RichEditor-controls">
+    <div className="RichEditor-controls" style={{display: 'inline'}}>
       {INLINE_STYLES.map(type => {
         return (
           <StyleButton
@@ -25,8 +26,10 @@ const InlineStyleControls = (props) => {
         );
       }
       )}
-      <ColorDropDown onToggle={props.onToggle}/>
-      <FontSizeDropDown onToggle={props.onToggle} />
+      <div style={{display: 'block'}}>
+        <ColorDropDown onToggle={props.onToggle}/>
+        <FontSizeDropDown onToggle={props.onToggle} />
+      </div>
     </div>
   );
 };

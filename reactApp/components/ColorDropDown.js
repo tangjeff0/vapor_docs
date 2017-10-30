@@ -35,7 +35,7 @@ class ColorDropDown extends React.Component {
   render() {
     return (
       <Dropdown trigger={
-	<div onMouseDown={(e) => e.preventDefault()} style={{display: 'inline-block'}}>{this.state.selectedColor ? this.state.selectedColor : 'Color'}<Icon right style={{marginTop:'-2px', marginLeft: '0'}}>arrow_drop_down</Icon></div>
+	<div onMouseDown={(e) => e.preventDefault()} style={{display: 'inline-block'}}>{this.state.selectedColor ? this.state.selectedColor : 'Color'}<Icon right className="dropdown-icon">arrow_drop_down</Icon></div>
 	}>
       {COLOR_STYLES.map(style => {
         return <DropDownItem key={style.label} active={this.state.selectedColor === style.label} handleClick={this.handleClick} label={style.label} style={style.style} />;
