@@ -48,7 +48,7 @@ app.get('/', function (req, res) {
 app.use(routes(passport));
 
 app.listen(3000, function () {
-  console.log('Backend server for Electron App running on port 3000!');
+  console.log('Backend server for Electron App running on port 3000!\n');
 });
 
 module.exports = app;

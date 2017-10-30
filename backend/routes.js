@@ -1,7 +1,6 @@
 const express = require('express');
 
-const User = require('./models').User;
-const Doc = require('./models').Doc;
+const { User, Doc } = require('./models');
 
 module.exports = (passport) => {
 
@@ -24,7 +23,6 @@ module.exports = (passport) => {
     res.json({message: 'localStrategy authenticated!', user: req.user});
   });
 
-  // optional auth wall would be here
   router.use((req, res, next) => {
     if (!req.user) res.json({message: 'gotta be logged in fa dat ;)'});
     else next();

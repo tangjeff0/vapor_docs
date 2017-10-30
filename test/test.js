@@ -12,7 +12,7 @@ const notAgent = chai.request(app);
 const agent = chai.request.agent(app);
 let docId0;
 
-describe('Create a new Doc while logged in', () => {
+describe('Milestone 2 Tests', () => {
   
   before(done => {
     User.remove()
@@ -24,7 +24,7 @@ describe('Create a new Doc while logged in', () => {
     });
   });
 
-  describe('register', () => {
+  describe('POST /user/new', () => {
     it('should register a user', (done) => {
       notAgent.post('/user/new')
         .send({
@@ -40,7 +40,7 @@ describe('Create a new Doc while logged in', () => {
     });
   });
 
-  describe('login', () => {
+  describe('POST /user/login', () => {
     it('should login with local strategy', (done) => {
       agent.post('/user/login')
         .send({
@@ -55,7 +55,7 @@ describe('Create a new Doc while logged in', () => {
     });
   });
 
-  describe('create a doc', () => {
+  describe('POST /doc/new', () => {
     it('should create a doc with the logged in user as the first collaborator', (done) => {
       agent
         .post('/doc/new')
@@ -73,7 +73,7 @@ describe('Create a new Doc while logged in', () => {
     });
   });
 
-  describe('get all docs', () => {
+  describe('GET /docs', () => {
     it('should not return anything bc not logged in', (done) => {
       notAgent.get('/docs')
         .end((err, res) => {
@@ -91,8 +91,8 @@ describe('Create a new Doc while logged in', () => {
     });
   });
 
-  describe('update the text of a doc', () => {
-    it('should return an array of 1 doc', (done) => {
+  describe('PUT /doc/:id', () => {
+    it('should return 1 doc with updated contents', (done) => {
       agent.put('/doc/' + docId0)
         .send({
           contents: 'updated contents',
@@ -104,7 +104,7 @@ describe('Create a new Doc while logged in', () => {
     });
   });
 
-  describe('open a doc while considering ownership status', () => {
+  describe('GET /doc/:id', () => {
     it('should return a doc bc user is in the collaborator array', (done) => {
       agent.get('/doc/' + docId0)
         .end((err, res) => {
