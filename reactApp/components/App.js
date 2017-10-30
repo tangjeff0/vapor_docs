@@ -9,7 +9,7 @@ class App extends React.Component {
   render() {
     return (
       <div className="container">
-        <h1>Collaborative Text editor</h1>
+        <h3>Collaborative Text editor</h3>
         <MyEditor />
       </div>
     );
