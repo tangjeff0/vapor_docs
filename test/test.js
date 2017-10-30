@@ -8,9 +8,9 @@ const { User, Doc } = require('../backend/models');
 const expect = chai.expect;
 chai.use(chaiHttp);
 
-const chaireq = chai.request(app);
+const notAgent = chai.request(app);
 const agent = chai.request.agent(app);
-let id;
+let docId0;
 
 describe('Create a new Doc while logged in', () => {
   
@@ -26,8 +26,7 @@ describe('Create a new Doc while logged in', () => {
 
   describe('register', () => {
     it('should register a user', (done) => {
-      chaireq
-        .post('/user/new')
+      notAgent.post('/user/new')
         .send({
           username: 'testJefe',
           password: 'baseball',
@@ -43,8 +42,7 @@ describe('Create a new Doc while logged in', () => {
 
   describe('login', () => {
     it('should login with local strategy', (done) => {
-      agent
-        .post('/user/login')
+      agent.post('/user/login')
         .send({
           username: 'testJefe',
           password: 'baseball',
@@ -62,22 +60,30 @@ describe('Create a new Doc while logged in', () => {
       agent
         .post('/doc/new')
         .send({
+          password: 'khalid',
         })
         .end((err, res) => {
           expect(res).to.have.status(200);
           expect(res.body.doc).to.be.an('object');
           expect(res.body.doc).to.have.property('title', 'untitled');
           expect(res.body.doc.collaborators).to.be.an('array').with.length(1);
-          id = res.body.doc._id;
+          docId0 = res.body.doc._id;
           done();
         });
     });
   });
 
   describe('get all docs', () => {
+    it('should not return anything bc not logged in', (done) => {
+      notAgent.get('/docs')
+        .end((err, res) => {
+          expect(res.body).to.have.property('message', 'gotta be logged in fa dat ;)');
+          done();
+        });
+    });
+
     it('should return an array of 1 doc', (done) => {
-      agent
-        .get('/doc')
+      agent.get('/docs')
         .end((err, res) => {
           expect(res.body.docs).to.be.an('array').with.length(1);
           done();
@@ -87,8 +93,7 @@ describe('Create a new Doc while logged in', () => {
 
   describe('update the text of a doc', () => {
     it('should return an array of 1 doc', (done) => {
-      agent
-        .put('/doc/' + id)
+      agent.put('/doc/' + docId0)
         .send({
           contents: 'updated contents',
         })
@@ -96,6 +101,29 @@ describe('Create a new Doc while logged in', () => {
           expect(res.body.doc.contents).to.equal('updated contents');
           done();
         });
+    });
+  });
+
+  describe('open a doc while considering ownership status', () => {
+    it('should return a doc bc user is in the collaborator array', (done) => {
+      agent.get('/doc/' + docId0)
+        .end((err, res) => {
+          expect(res.body.doc.contents).to.equal('updated contents');
+          done();
+        });
+    });
+    it('should not return a doc if user is not a collaborator', (done) => {
+      Doc.create({
+        password: 'ravedotio',
+        collaborators: ['partysquad'],
+      })
+      .then(resp => {
+        agent.get('/doc/' + resp.id)
+          .end((err, res) => {
+            expect(res.body).to.have.property('message', 'sorry, you are not yet a collaborator on this doc :(');
+            done();
+          });
+      });
     });
   });
 

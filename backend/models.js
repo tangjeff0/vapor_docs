@@ -18,6 +18,10 @@ const DocSchema = new mongoose.Schema({
     type: String,
     default: 'untitled',
   },
+  password: {
+    type: String,
+    required: true,
+  },
   contents: {// most recent state
     type: String,
     default: '',
