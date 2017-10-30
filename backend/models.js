@@ -12,7 +12,6 @@ const UserSchema = new mongoose.Schema({
   },
 });
 
-// use mongoose _id's as document ids
 const DocSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -27,8 +26,8 @@ const DocSchema = new mongoose.Schema({
     default: '',
   },
   collaborators: {
-    type: Array,// array of user ids
-    default: [],// initialize with req.user._id
+    type: Array,// array of mongoose user ids
+    default: [],// initialize with req.user.id upon POST /doc/new
   },
   created: {
     type: Date,
@@ -40,7 +39,7 @@ const DocSchema = new mongoose.Schema({
   },
   revision_history: {
     type: Array,
-    default: [],// update each time POST /doc/save
+    default: [],// push to upon each PUT /doc/:id
   },
 });
 
