@@ -42,13 +42,30 @@ passport.use(new LocalStrategy(
 ));
 
 app.get('/', function (req, res) {
-  res.send('Hello World!');
+  res.sendFile(__dirname + '/socket.html');
 });
 
 app.use(routes(passport));
 
-app.listen(3000, function () {
+const server = app.listen(3000, function () {
   console.log('Backend server for Electron App running on port 3000!\n');
 });
 
-module.exports = app;
+const io = require('socket.io').listen(server);
+
+io.on('connection', onConnect);
+
+function onConnect(socket) {
+  console.log('a user connected');
+
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
+
+  socket.on('change doc', (contents) => {
+    socket.broadcast.emit('change doc', contents);
+  });
+
+}
+
+module.exports = server;

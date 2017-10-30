@@ -1,6 +1,6 @@
 /* global describe, it, before */
 
-const app = require('../backend/server.js');
+const server = require('../backend/server.js');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const { User, Doc } = require('../backend/models');
@@ -8,8 +8,8 @@ const { User, Doc } = require('../backend/models');
 const expect = chai.expect;
 chai.use(chaiHttp);
 
-const notAgent = chai.request(app);
-const agent = chai.request.agent(app);
+const notAgent = chai.request(server);
+const agent = chai.request.agent(server);
 let docId0;
 
 describe('Milestone 2 Tests', () => {
