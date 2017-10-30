@@ -5,7 +5,10 @@ const User = require('./models').User;
 const Doc = require('./models').Doc;
 
 router.post('/doc/new', (req, res) => {
-  Doc.create()
+  Doc.create({
+    title: 'newDoc',
+    contents: 'blah',
+  })
     .then(resp => {
       console.log('\nPOST /doc/new successful');
     })

@@ -6,7 +6,7 @@ const passport = require('passport'),
 const User = require('./models').User;
 const routes = require('./routes');
 
-const Promise = require('bluebird');
+mongoose.Promise = require('bluebird');
 mongoose.connect(process.env.MONGODB_URI, {useMongoClient: true});
 
 const app = express();
@@ -47,12 +47,12 @@ app.post('/user/new', (req, res) => {
     password: req.body.password,
   })
     .then(resp => {
+      console.log('\nPOST /user/new successful', {message: 'user created!', user: resp});
       res.json({message: 'user created!', user: resp});
-      console.log('\nPOST /user/new successful');
     })
     .catch(err => {
+      console.log('\nPOST /user/new unsuccessful :( Error:', err);
       res.json({message: 'user failed to create: ' + err});
-      console.log('\nPOST /user/new unsuccessful :(');
     });
 });
 
