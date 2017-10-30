@@ -10,6 +10,7 @@ chai.use(chaiHttp);
 
 const chaireq = chai.request(app);
 const agent = chai.request.agent(app);
+let id;
 
 describe('Create a new Doc while logged in', () => {
   
@@ -33,7 +34,7 @@ describe('Create a new Doc while logged in', () => {
         })
         .end((err, res) => {
           expect(res).to.have.status(200);
-          expect(res.body.user).to.be.an('object').with.keys('username', 'password', '_id', 'docs', '__v');
+          expect(res.body.user).to.be.an('object').with.any.keys('username', 'password');
           expect(res);
           done();
         });
@@ -67,6 +68,7 @@ describe('Create a new Doc while logged in', () => {
           expect(res.body.doc).to.be.an('object');
           expect(res.body.doc).to.have.property('title', 'untitled');
           expect(res.body.doc.collaborators).to.be.an('array').with.length(1);
+          id = res.body.doc._id;
           done();
         });
     });
@@ -82,5 +84,20 @@ describe('Create a new Doc while logged in', () => {
         });
     });
   });
+
+  describe('update the text of a doc', () => {
+    it('should return an array of 1 doc', (done) => {
+      agent
+        .put('/doc/' + id)
+        .send({
+          contents: 'updated contents',
+        })
+        .end((err, res) => {
+          expect(res.body.doc.contents).to.equal('updated contents');
+          done();
+        });
+    });
+  });
+
 
 });

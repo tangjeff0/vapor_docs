@@ -42,12 +42,25 @@ module.exports = (passport) => {
     Doc.find().sort({last_edited: -1})
       .then(resp => {
         res.json({docs: resp});
-        /* console.log('\nPOST /doc/new successful'); */
       })
       .catch(err => {
-        /* console.log('\nPOST /doc/new unsuccessful :('); */
+        res.json({error_message: err});
       });
   });
+
+  router.put('/doc/:id', (req, res) => {
+    Doc.findById(req.params.id)
+      .then(doc => {
+        doc.contents = req.body.contents;
+        doc.save(err => {
+          if (!err) res.json({doc});
+        });
+      })
+      .catch(err => {
+        res.json({error_message: err});
+      });
+  });
+
 
   return router;
 };

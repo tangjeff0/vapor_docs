@@ -10,10 +10,6 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  docs: {// array of Doc _ids
-    type: Array,
-    default: [],
-  },
 });
 
 // use mongoose _id's as document ids
@@ -28,7 +24,7 @@ const DocSchema = new mongoose.Schema({
   },
   collaborators: {
     type: Array,// array of user ids
-    default: [],// initialize with req.user
+    default: [],// initialize with req.user._id
   },
   created: {
     type: Date,
