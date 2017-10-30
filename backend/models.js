@@ -20,6 +20,7 @@ const UserSchema = new mongoose.Schema({
 const DocSchema = new mongoose.Schema({
   title: {
     type: String,
+    default: 'untitled',
   },
   contents: {// most recent state
     type: String,

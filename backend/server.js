@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 const passport = require('passport'),
   LocalStrategy = require('passport-local').Strategy;
 
@@ -11,9 +12,12 @@ mongoose.connect(process.env.MONGODB_URI, {useMongoClient: true});
 
 const app = express();
 app.use(require('cookie-parser')());
-app.use(require('body-parser').urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
 
+app.use(passport.initialize());
+app.use(passport.session());
 
 // passport 
 passport.serializeUser(function(user, done) {
@@ -28,7 +32,7 @@ passport.deserializeUser(function(id, done) {
 
 passport.use(new LocalStrategy(
   function(username, password, done) {
-    User.findOne({ username, password }, function (err, user) {
+    User.findOne({ username }, function (err, user) {
       if (err) { return done(err); }
       if (!user) { return done(null, false); }
       if (user.password !== password) { return done(null, false); }
@@ -41,30 +45,10 @@ app.get('/', function (req, res) {
   res.send('Hello World!');
 });
 
-app.post('/user/new', (req, res) => {
-  User.create({
-    username: req.body.username,
-    password: req.body.password,
-  })
-    .then(resp => {
-      console.log('\nPOST /user/new successful', {message: 'user created!', user: resp});
-      res.json({message: 'user created!', user: resp});
-    })
-    .catch(err => {
-      console.log('\nPOST /user/new unsuccessful :( Error:', err);
-      res.json({message: 'user failed to create: ' + err});
-    });
-});
-
-app.post('/user/login', passport.authenticate('local', (req, res) => {
-  res.json({message: 'localStrategy authenticated!', user: req.user});
-}));
-
-app.use(passport.initialize());
-app.use(passport.session());
-
-app.use(routes);
+app.use(routes(passport));
 
 app.listen(3000, function () {
   console.log('Backend server for Electron App running on port 3000!');
 });
+
+module.exports = app;
