@@ -1,5 +1,6 @@
 import React from 'react';
 import {Editor, EditorState, RichUtils} from 'draft-js';
+import {Button, Icon} from 'react-materialize';
 import axios from 'axios';
 
 import InlineStyleControls from './InlineStyleControls';
@@ -29,33 +30,38 @@ const styleMap = {
 class MyEditor extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {editorState: EditorState.createEmpty()};
+    this.state = {editorState: EditorState.createEmpty(), docId: ''};
     this.onChange = (editorState) => this.setState({editorState});
-    this.focus = () => this.refs.editor.focus();
+    this.focus = () => this.domEditor.focus();
     this._toggleInlineStyle = this._toggleInlineStyle.bind(this);
     this._toggleBlockStyle = this._toggleBlockStyle.bind(this);
+    this.setDomEditorRef = ref => this.domEditor = ref;
+    this.saveDoc = this.saveDoc.bind(this);
   }
 
-  componentDidMount() {
-    this.getDocContents();
+  componentDidMount(){
+    this.domEditor.focus();
   }
-  getDocContents() {
-    axios.get(process.env.BACKEND_URL + '/doc/' + this.props.match.params.id)//TODO verify correct params
-    .then(resp => this.setState({editorState: resp.body.contents}))
-    .catch(err => console.log('Error getting contents:', err));
-  }
-
-
-  // SOME OTHER FUNCTIONS FOR THE OTHER PAGES
-
-  // Login/Register page => onKeyPress, onSubmit
-  handleChange(key) {
-    return (e) => {
-      const state = {};
-      state[key] = e;
-      this.setState(state);
-    };
-  }
+  // componentDidMount() {
+  //   this.getDocContents();
+  // }
+  // getDocContents() {
+  //   axios.get(process.env.BACKEND_URL + '/doc/' + this.props.match.params.id)//TODO verify correct params
+  //   .then(resp => this.setState({editorState: resp.body.contents}))
+  //   .catch(err => console.log('Error getting contents:', err));
+  // }
+  //
+  //
+  // // SOME OTHER FUNCTIONS FOR THE OTHER PAGES
+  //
+  // // Login/Register page => onKeyPress, onSubmit
+  // handleChange(key) {
+  //   return (e) => {
+  //     const state = {};
+  //     state[key] = e;
+  //     this.setState(state);
+  //   };
+  // }
 
   /* onSubmit() {//depending on the React Route, change the postUrl onSubmit */
   /*   const postUrl = this.props.match.params.loginOrRegister === '/register' ? '/user/new' : '/user/login'; */
@@ -66,14 +72,14 @@ class MyEditor extends React.Component {
   /* } */
 
   // Home page => load docs
-  compondentDidMount() {
-    this.getDocs();
-  }
-  getDocs() {
-    axios.get(process.env.BACKEND_URL + '/docs')
-      .then(resp => this.setState({docs: resp.docs}))
-      .catch(err => console.log('Error getting docs:', err));
-  }
+  // compondentDidMount() {
+  //   this.getDocs();
+  // }
+  // getDocs() {
+  //   axios.get(process.env.BACKEND_URL + '/docs')
+  //     .then(resp => this.setState({docs: resp.docs}))
+  //     .catch(err => console.log('Error getting docs:', err));
+  // }
 
   /* onNewDoc(e) { */
   /*   axios.post(process.env.BACKEND_URL + '/doc/new', { */
@@ -98,10 +104,20 @@ class MyEditor extends React.Component {
     );
   }
 
+  saveDoc() {
+    if(!this.state.docId) {
+      axios.put('http://localhost:3000/doc/new', {
+        
+      })
+    }
+
+  }
+
   render() {
     let className = 'RichEditor-editor';
     const {editorState} = this.state;
     return (
+      <div className="wrapper">
       <div className="RichEditor-root">
       <BlockStyleControls editorState={editorState} onToggle={this._toggleBlockStyle}
       />
@@ -110,8 +126,10 @@ class MyEditor extends React.Component {
           onToggle={this._toggleInlineStyle}
         />
         <div className={className} onClick={this.focus}>
-          <Editor blockStyleFn={getBlockStyle} spellCheck={true} customStyleMap={styleMap} ref="editor" editorState={this.state.editorState} onChange={this.onChange} />
+          <Editor blockStyleFn={getBlockStyle} spellCheck={true} customStyleMap={styleMap} ref={this.setDomEditorRef} editorState={this.state.editorState} onChange={this.onChange} />
         </div>
+      </div>
+      <Button onClick={this.saveDoc} waves='light' className="save-doc">Save<Icon left>save</Icon></Button>
       </div>
     );
   }

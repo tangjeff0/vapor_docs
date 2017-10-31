@@ -7,7 +7,12 @@ module.exports = (passport) => {
   const router = express.Router();
 
   router.post('/user/findOrCreate', passport.authenticate('local'), (req, res) => {
-    res.json({ user: req.user });
+    // want a list of all documents under this user.
+    Doc.find({collaborators: req.user.id})
+    .then(docs => {
+      res.json({ user: req.user, docs });
+    });
+
   });
 
   router.use((req, res, next) => {
