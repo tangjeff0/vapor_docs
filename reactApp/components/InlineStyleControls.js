@@ -26,7 +26,7 @@ const InlineStyleControls = (props) => {
         );
       }
       )}
-      <div style={{display: 'block'}}>
+      <div style={{marginTop: '-3px', display: 'inline'}}>
         <ColorDropDown onToggle={props.onToggle}/>
         <FontSizeDropDown onToggle={props.onToggle} />
       </div>
