@@ -24,7 +24,7 @@ UserSchema.statics.findOrCreate = function(username, password, callback) {
       .catch(err => { callback(err, null); }); // error
     }
     else if (password !== user.password) { // invalid password
-      callback("Password's do not match.", null);
+      callback("Passwords do not match.", null);
     }
     else { // user authenticated, pass user
       callback(null, user);
@@ -32,8 +32,8 @@ UserSchema.statics.findOrCreate = function(username, password, callback) {
   })
   .catch(err => {
     callback(err, null);
-  })
-}
+  });
+};
 
 const DocSchema = new mongoose.Schema({
   title: {
@@ -44,21 +44,21 @@ const DocSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  created_at: {
+    type: Number,
+    default: new Date().getTime(),
+  },
   contents: {// most recent state
     type: String,
     default: '',
   },
+  last_edit: {
+    type: Number,
+    default: new Date().getTime(),// update each time POST /doc/save
+  },
   collaborators: {
     type: Array,// array of mongoose user ids
     default: [],// initialize with req.user.id upon POST /doc/new
-  },
-  created: {
-    type: Date,
-    default: new Date().getTime(),
-  },
-  last_edit: {
-    type: Date,
-    default: new Date().getTime(),// update each time POST /doc/save
   },
   revision_history: {
     type: Array,

@@ -15,22 +15,6 @@ module.exports = (passport) => {
     else next();
   });
 
-  router.post('/doc/new', (req, res) => {
-    if (!req.body.password) res.json({message: 'doc needs a password!'});
-    else {
-      Doc.create({
-        password: req.body.password,
-        collaborators: [req.user.id],
-      })
-      .then(resp => {
-        res.json({doc: resp});
-      })
-      .catch(err => {
-        res.json({error_message: err});
-      });
-    }
-  });
-
   router.get('/docs', (req, res) => {
     Doc.find().sort({last_edited: -1})
       .then(resp => {
@@ -56,10 +40,30 @@ module.exports = (passport) => {
       });
   });
 
+  router.post('/doc/new', (req, res) => {
+    if (!req.body.password) res.json({message: 'doc needs a password!'});
+    else {
+      Doc.create({
+        password: req.body.password,
+        collaborators: [req.user.id],
+      })
+      .then(resp => {
+        res.json({doc: resp});
+      })
+      .catch(err => {
+        res.json({error_message: err});
+      });
+    }
+  });
+
+  // id can be the user's username or _id + integer timestamp
   router.put('/doc/:id', (req, res) => {
     Doc.findById(req.params.id)
       .then(doc => {
+        doc.title =  req.body.title || doc.title;
         doc.contents = req.body.contents;
+        doc.last_edit = new Date().getTime();
+        doc.revision_history = [...doc.revision_history, req.body.contents];
         doc.save(err => {
           if (!err) res.json({doc});
         });
