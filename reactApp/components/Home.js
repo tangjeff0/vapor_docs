@@ -46,7 +46,7 @@ class Home extends React.Component {
     if(this.state.user) {
       return (
         <div className="container loggedin-homepage">
-          <h3 style={{color: 'white'}} >All your documents. In one place. </h3>
+          <h3 style={{color: 'white'}} >All your DocTings. In one place. </h3>
           <div className="doc-container">
             {this.state.docs.map(doc => {
               return  (

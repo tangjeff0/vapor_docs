@@ -37,6 +37,7 @@ class MyEditor extends React.Component {
     this._toggleBlockStyle = this._toggleBlockStyle.bind(this);
     this.setDomEditorRef = ref => this.domEditor = ref;
     this.saveDoc = this.saveDoc.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
   }
 
   componentDidMount(){
@@ -113,13 +114,17 @@ class MyEditor extends React.Component {
 
   }
 
+  handleInputChange(e) {
+    this.setState({title: e.target.value});
+  }
+
   render() {
     let className = 'RichEditor-editor';
     const {editorState} = this.state;
     return (
-      <div className="wrapper">
-      <Row>
-        <Input s={6} label="Title" value={this.state.title} />
+      <div className="wrapper" style={{width: '95%'}}>
+      <Row className="title-row">
+        <Input className="title-input" s={6} label="Title" value={this.state.title} onChange={this.handleInputChange}/>
       </Row>
       <div className="RichEditor-root">
           <div className="toolbar-wrapper">
