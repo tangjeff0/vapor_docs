@@ -1,6 +1,6 @@
 import React from 'react';
 import {Editor, EditorState, RichUtils} from 'draft-js';
-import {Button, Icon} from 'react-materialize';
+import {Button, Icon, Input, Modal} from 'react-materialize';
 import axios from 'axios';
 
 import InlineStyleControls from './InlineStyleControls';
@@ -30,61 +30,64 @@ const styleMap = {
 class MyEditor extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {editorState: EditorState.createEmpty(), docId: ''};
+    this.state = {
+      editorState: EditorState.createEmpty(),
+      docId: '',
+      password: '',
+    };
     this.onChange = (editorState) => this.setState({editorState});
     this.focus = () => this.domEditor.focus();
     this._toggleInlineStyle = this._toggleInlineStyle.bind(this);
     this._toggleBlockStyle = this._toggleBlockStyle.bind(this);
     this.setDomEditorRef = ref => this.domEditor = ref;
+    this.handleInputChange = this.handleInputChange.bind(this);
     this.saveDoc = this.saveDoc.bind(this);
+    this.saveModal = this.saveModal.bind(this);
   }
 
   componentDidMount(){
     this.domEditor.focus();
   }
-  // componentDidMount() {
-  //   this.getDocContents();
-  // }
-  // getDocContents() {
-  //   axios.get(process.env.BACKEND_URL + '/doc/' + this.props.match.params.id)//TODO verify correct params
-  //   .then(resp => this.setState({editorState: resp.body.contents}))
-  //   .catch(err => console.log('Error getting contents:', err));
-  // }
-  //
-  //
-  // // SOME OTHER FUNCTIONS FOR THE OTHER PAGES
-  //
-  // // Login/Register page => onKeyPress, onSubmit
-  // handleChange(key) {
-  //   return (e) => {
-  //     const state = {};
-  //     state[key] = e;
-  //     this.setState(state);
-  //   };
-  // }
 
-  /* onSubmit() {//depending on the React Route, change the postUrl onSubmit */
-  /*   const postUrl = this.props.match.params.loginOrRegister === '/register' ? '/user/new' : '/user/login'; */
-  /*   axios.post(process.env.BACKEND_URL + postUrl, { */
-  /*     username: this.state.username, */
-  /*     password: this.state.password, */
-  /*   }); */
-  /* } */
+  handleInputChange(event) {
+    const target = event.target;
+    var value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
+    this.setState({
+      [name]: value
+    });
+  }
 
-  // Home page => load docs
-  // compondentDidMount() {
-  //   this.getDocs();
-  // }
-  // getDocs() {
-  //   axios.get(process.env.BACKEND_URL + '/docs')
-  //     .then(resp => this.setState({docs: resp.docs}))
-  //     .catch(err => console.log('Error getting docs:', err));
-  // }
+  saveDoc() {
+    if (!this.state.docId) {
+      $('#saveModal').modal('open');
+    }
+    else {
+      axios.put('http://localhost:3000/doc/' + this.state.docId, {
+        contents: JSON.stringify(this.state.editorState.getCurrentContent()),
+      })
+      .then(resp => {
+        console.log(resp);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    }
+  }
 
-  /* onNewDoc(e) { */
-  /*   axios.post(process.env.BACKEND_URL + '/doc/new', { */
-  /*     password: e.target.value */
-  /* } */
+  saveModal() {
+    axios.post('http://localhost:3000/doc/new', {
+      password: this.state.password,
+    })
+    .then(resp => {
+      console.log(resp);
+      this.setState({docId: resp.data.doc._id});
+      $('#saveModal').modal('close');
+    })
+    .catch(err => {
+      console.log(err);
+    });
+  }
 
   _toggleBlockStyle(blockType) {
     this.onChange(
@@ -104,23 +107,14 @@ class MyEditor extends React.Component {
     );
   }
 
-  saveDoc() {
-    if(!this.state.docId) {
-      axios.put('http://localhost:3000/doc/new', {
-        
-      })
-    }
-
-  }
-
   render() {
     let className = 'RichEditor-editor';
     const {editorState} = this.state;
+
     return (
       <div className="wrapper">
       <div className="RichEditor-root">
-      <BlockStyleControls editorState={editorState} onToggle={this._toggleBlockStyle}
-      />
+      <BlockStyleControls editorState={editorState} onToggle={this._toggleBlockStyle} />
       <InlineStyleControls
           editorState={editorState}
           onToggle={this._toggleInlineStyle}
@@ -129,11 +123,29 @@ class MyEditor extends React.Component {
           <Editor blockStyleFn={getBlockStyle} spellCheck={true} customStyleMap={styleMap} ref={this.setDomEditorRef} editorState={this.state.editorState} onChange={this.onChange} />
         </div>
       </div>
+
+			<Modal
+				id='saveModal'
+				header='New DocTing - please enter password'
+        actions={<Button onClick={this.saveModal} waves='light' className="save-doc">Save<Icon left>save</Icon></Button>}
+      >
+				<Input onChange={this.handleInputChange} value={this.state.password} name="password" type="password" label="password" s={12} />
+			</Modal>
+
       <Button onClick={this.saveDoc} waves='light' className="save-doc">Save<Icon left>save</Icon></Button>
+
       </div>
     );
   }
 }
+
+			/* <Modal */
+			/* 	trigger={ */
+          /* this.state.docId? null : */
+        /* } */
+      /* > */
+			/* </Modal> */
+
 const getBlockStyle = (block) => {
 
   switch (block.getType()) {

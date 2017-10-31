@@ -46,22 +46,18 @@ module.exports = (passport) => {
   });
 
   router.post('/doc/new', (req, res) => {
-    if (!req.body.password) res.json({message: 'doc needs a password!'});
-    else {
-      Doc.create({
-        password: req.body.password,
-        collaborators: [req.user.id],
-      })
-      .then(resp => {
-        res.json({doc: resp});
-      })
-      .catch(err => {
-        res.json({error_message: err});
-      });
-    }
+    Doc.create({
+      password: req.body.password,
+      collaborators: [req.user.id],
+    })
+    .then(resp => {
+      res.json({doc: resp});
+    })
+    .catch(err => {
+      res.json({error_message: err});
+    });
   });
 
-  // id can be the user's username or _id + integer timestamp
   router.put('/doc/:id', (req, res) => {
     Doc.findById(req.params.id)
       .then(doc => {

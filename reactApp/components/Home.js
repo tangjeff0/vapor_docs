@@ -22,6 +22,7 @@ class Home extends React.Component {
       this.setState({user: localStorage.getItem('user')});
     }
   }
+
   handleInputChange(event) {
     const target = event.target;
     var value = target.type === 'checkbox' ? target.checked : target.value;
