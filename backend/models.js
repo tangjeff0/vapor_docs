@@ -12,6 +12,32 @@ const UserSchema = new mongoose.Schema({
   },
 });
 
+UserSchema.statics.findOrCreate = function(username, password, callback) {
+  let message;
+  User.findOne({username})
+  .then(user => {
+    if (user) {//login
+      callback(null, user);
+    }
+    else {//create user
+      User.create({
+        username,
+        password,
+      })
+      .then(resp => {
+        callback(null, resp);
+      })
+      .catch(err => {
+        message = 'Error creating user within findOrCreate static';
+        callback(null, null);
+      });
+    }
+  })
+  .catch(err => {
+    callback(null, null);
+  });
+};
+
 const DocSchema = new mongoose.Schema({
   title: {
     type: String,

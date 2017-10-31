@@ -6,22 +6,28 @@ module.exports = (passport) => {
 
   const router = express.Router();
 
-  router.post('/user/new', (req, res) => {
-    User.create({
-      username: req.body.username,
-      password: req.body.password,
-    })
-      .then(resp => {
-        res.json({message: 'user created!', user: resp});
-      })
-      .catch(err => {
-        res.json({message: 'user failed to create: ' + err});
-      });
+  router.post('/user/findOrCreate', (req, res) => {
+    User.findOrCreate(req.body.username, req.body.password, function(err, user) {
+      res.json({user})
+    });
   });
 
-  router.post('/user/login', passport.authenticate('local'), (req, res) => {
-    res.json({message: 'localStrategy authenticated!', user: req.user});
-  });
+  /* router.post('/user/new', (req, res) => { */
+  /*   User.create({ */
+  /*     username: req.body.username, */
+  /*     password: req.body.password, */
+  /*   }) */
+  /*     .then(resp => { */
+  /*       res.json({message: 'user created!', user: resp}); */
+  /*     }) */
+  /*     .catch(err => { */
+  /*       res.json({message: 'user failed to create: ' + err}); */
+  /*     }); */
+  /* }); */
+
+  /* router.post('/user/login', passport.authenticate('local'), (req, res) => { */
+  /*   res.json({message: 'localStrategy authenticated!', user: req.user}); */
+  /* }); */
 
   router.use((req, res, next) => {
     if (!req.user) res.json({message: 'gotta be logged in fa dat ;)'});
