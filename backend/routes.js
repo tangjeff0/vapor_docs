@@ -6,9 +6,9 @@ module.exports = (passport) => {
 
   const router = express.Router();
 
-  router.post('/user/findOrCreate', (req, res) => {
-    User.findOrCreate(req.body.username, req.body.password, function(err, user) {
-      res.json({user})
+  router.post('/user/findOrCreate', passport.authenticate('local'), (req, res) => {
+    User.findOrCreate(req.body.username, req.body.password, (err, user) => {
+      res.json({user});
     });
   });
 
@@ -24,7 +24,6 @@ module.exports = (passport) => {
   /*       res.json({message: 'user failed to create: ' + err}); */
   /*     }); */
   /* }); */
-
   /* router.post('/user/login', passport.authenticate('local'), (req, res) => { */
   /*   res.json({message: 'localStrategy authenticated!', user: req.user}); */
   /* }); */

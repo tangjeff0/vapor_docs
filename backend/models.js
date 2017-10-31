@@ -13,7 +13,6 @@ const UserSchema = new mongoose.Schema({
 });
 
 UserSchema.statics.findOrCreate = function(username, password, callback) {
-  let message;
   User.findOne({username})
   .then(user => {
     if (user) {//login
@@ -28,7 +27,6 @@ UserSchema.statics.findOrCreate = function(username, password, callback) {
         callback(null, resp);
       })
       .catch(err => {
-        message = 'Error creating user within findOrCreate static';
         callback(null, null);
       });
     }

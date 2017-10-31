@@ -26,16 +26,14 @@ describe('Milestone 2 Tests', () => {
 
   describe('POST /user/findOrCreate', () => {
     it('should return a user bc none exists yet', (done) => {
-      notAgent.post('/user/findOrCreate')
+      agent.post('/user/findOrCreate')
         .send({
           username: 'testJefe',
           password: 'baseball',
         })
         .end((err, res) => {
-          /* console.log(err); */
           expect(res).to.have.status(200);
-          console.log(res.body);
-          // expect(res.body.user).to.be.an('object').with.any.keys('username', 'password');
+          expect(res.body.user).to.be.an('object').with.any.keys('username', 'password');
           done();
         });
     });
@@ -72,23 +70,23 @@ describe('Milestone 2 Tests', () => {
   /*   }); */
   /* }); */
 
-  /* describe('POST /doc/new', () => { */
-  /*   it('should create a doc with the logged in user as the first collaborator', (done) => { */
-  /*     agent */
-  /*       .post('/doc/new') */
-  /*       .send({ */
-  /*         password: 'khalid', */
-  /*       }) */
-  /*       .end((err, res) => { */
-  /*         expect(res).to.have.status(200); */
-  /*         expect(res.body.doc).to.be.an('object'); */
-  /*         expect(res.body.doc).to.have.property('title', 'untitled'); */
-  /*         expect(res.body.doc.collaborators).to.be.an('array').with.length(1); */
-  /*         docId0 = res.body.doc._id; */
-  /*         done(); */
-  /*       }); */
-  /*   }); */
-  /* }); */
+  describe('POST /doc/new', () => {
+    it('should create a doc with the logged in user as the first collaborator', (done) => {
+      agent
+        .post('/doc/new')
+        .send({
+          password: 'khalid',
+        })
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res.body.doc).to.be.an('object');
+          expect(res.body.doc).to.have.property('title', 'untitled');
+          expect(res.body.doc.collaborators).to.be.an('array').with.length(1);
+          docId0 = res.body.doc._id;
+          done();
+        });
+    });
+  });
 
   /* describe('GET /docs', () => { */
   /*   it('should not return anything bc not logged in', (done) => { */
