@@ -1,5 +1,7 @@
 import React from 'react';
 import MyEditor from './MyEditor';
+import {Link} from 'react-router-dom';
+import {Icon} from 'react-materialize';
 
 class EditorPage extends React.Component {
   constructor(props) {
@@ -8,8 +10,9 @@ class EditorPage extends React.Component {
 
   render() {
     return (
-      <div className="container">
-        <h3>Collaborative Text editor</h3>
+      <div className="container" style={{paddingTop: '20px'}}>
+        <Link to="/"> Back </Link>
+        <h4>Collaborative Text editor</h4>
         <MyEditor />
       </div>
     );

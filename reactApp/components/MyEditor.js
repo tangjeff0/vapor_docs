@@ -1,5 +1,6 @@
 import React from 'react';
 import {Editor, EditorState, RichUtils} from 'draft-js';
+import {Button, Icon} from 'react-materialize';
 import axios from 'axios';
 
 import InlineStyleControls from './InlineStyleControls';
@@ -29,12 +30,13 @@ const styleMap = {
 class MyEditor extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {editorState: EditorState.createEmpty()};
+    this.state = {editorState: EditorState.createEmpty(), docId: ''};
     this.onChange = (editorState) => this.setState({editorState});
     this.focus = () => this.domEditor.focus();
     this._toggleInlineStyle = this._toggleInlineStyle.bind(this);
     this._toggleBlockStyle = this._toggleBlockStyle.bind(this);
     this.setDomEditorRef = ref => this.domEditor = ref;
+    this.saveDoc = this.saveDoc.bind(this);
   }
 
   componentDidMount(){
@@ -102,10 +104,20 @@ class MyEditor extends React.Component {
     );
   }
 
+  saveDoc() {
+    if(!this.state.docId) {
+      axios.put('http://localhost:3000/doc/new', {
+        
+      })
+    }
+
+  }
+
   render() {
     let className = 'RichEditor-editor';
     const {editorState} = this.state;
     return (
+      <div className="wrapper">
       <div className="RichEditor-root">
       <BlockStyleControls editorState={editorState} onToggle={this._toggleBlockStyle}
       />
@@ -116,6 +128,8 @@ class MyEditor extends React.Component {
         <div className={className} onClick={this.focus}>
           <Editor blockStyleFn={getBlockStyle} spellCheck={true} customStyleMap={styleMap} ref={this.setDomEditorRef} editorState={this.state.editorState} onChange={this.onChange} />
         </div>
+      </div>
+      <Button onClick={this.saveDoc} waves='light' className="save-doc">Save<Icon left>save</Icon></Button>
       </div>
     );
   }
