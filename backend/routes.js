@@ -7,9 +7,7 @@ module.exports = (passport) => {
   const router = express.Router();
 
   router.post('/user/findOrCreate', passport.authenticate('local'), (req, res) => {
-    User.findOrCreate(req.body.username, req.body.password, (err, user) => {
-      res.json({user});
-    });
+    res.json({ user: req.user });
   });
 
   /* router.post('/user/new', (req, res) => { */
