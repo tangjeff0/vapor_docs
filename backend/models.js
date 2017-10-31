@@ -14,9 +14,8 @@ const UserSchema = new mongoose.Schema({
 
 UserSchema.statics.findOrCreate = function(username, password, callback) {
   User.findOne({ username })
-  .then((err, user) => {
-    if (err) { callback(err, null); } // error
-    else if (!user) {
+  .then(user => {
+    if (!user) {
       User.create({
         username,
         password,
@@ -27,8 +26,13 @@ UserSchema.statics.findOrCreate = function(username, password, callback) {
     else if (password !== user.password) { // invalid password
       callback("Password's do not match.", null);
     }
-    else { callback(null, user) } // return user
-  });
+    else { // user authenticated, pass user
+      callback(null, user);
+    }
+  })
+  .catch(err => {
+    callback(err, null);
+  })
 }
 
 const DocSchema = new mongoose.Schema({

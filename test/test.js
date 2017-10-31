@@ -25,6 +25,7 @@ describe('Milestone 2 Tests', () => {
   });
 
   describe('POST /user/findOrCreate', () => {
+
     it('should return a user bc none exists yet', (done) => {
       agent.post('/user/findOrCreate')
         .send({
@@ -37,6 +38,32 @@ describe('Milestone 2 Tests', () => {
           done();
         });
     });
+
+    it('should login with same passwords', (done) => {
+      agent.post('/user/findOrCreate')
+        .send({
+          username: 'testJefe',
+          password: 'baseball',
+        })
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          done();
+        });
+    });
+
+    it('should return a message bc passwords do not match', (done) => {
+      agent.post('/user/findOrCreate')
+        .send({
+          username: 'testJefe',
+          password: 'football',
+        })
+        .end((err, res) => {
+          expect(res.body).to.be.an('object').that.is.empty;
+          expect(res).to.have.status(200);
+          done();
+        });
+    });
+
   });
 
   describe('POST /doc/new', () => {

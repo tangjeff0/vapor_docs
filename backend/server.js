@@ -34,7 +34,9 @@ passport.use(new LocalStrategy(
   function(username, password, done) {
     User.findOrCreate(username, password, function (err, user) {
       if (err) { return done(err, null); } // error
-      return done(null, user); //register
+      else {
+        return done(null, user); //register
+      }
     });
   }
 ));
