@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const passport = require('passport'),
   LocalStrategy = require('passport-local').Strategy;
-
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 const User = require('./models').User;
 const routes = require('./routes');
 
@@ -14,7 +15,10 @@ const app = express();
 app.use(require('cookie-parser')());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
+app.use(session({ secret: 'keyboard cat',
+  store: new MongoStore({mongooseConnection: mongoose.connection}), 
+  save: true,
+  saveUninitialized: true }));
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -53,16 +57,24 @@ const server = app.listen(3000, function () {
 
 const io = require('socket.io').listen(server);
 
-io.on('connection', onConnect);
+io.on('connect', onConnect);
 
 function onConnect(socket) {
-  console.log('a user connected');
+  let ctr = 0;
+
+  socket.on('connect', () => {
+    // add new cursor color to beginning of all text editors
+    ctr++;
+  });
 
   socket.on('disconnect', () => {
+    // remove that cursor from all editors
+    ctr--;
     console.log('user disconnected');
   });
 
   socket.on('change doc', (contents) => {
+    // chnage doc across all editors
     socket.broadcast.emit('change doc', contents);
   });
 

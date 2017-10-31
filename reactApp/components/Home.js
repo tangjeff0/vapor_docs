@@ -21,7 +21,14 @@ class Home extends React.Component {
     if(localStorage.getItem('user')) {
       this.setState({user: localStorage.getItem('user')});
     }
+    const self = this;
+    axios.get('http://localhost:3000/docs')
+    .then(function(response) {
+      console.log("RESP", response);
+      self.setState({docs: response.data.docs});
+    });
   }
+
   handleInputChange(event) {
     const target = event.target;
     var value = target.type === 'checkbox' ? target.checked : target.value;
@@ -47,15 +54,15 @@ class Home extends React.Component {
       return (
         <div className="container loggedin-homepage">
           <h3 style={{color: 'white'}} >All your DocTings. In one place. </h3>
+          <div>
+          <Link to="/newEditor"><Button floating large className='red' waves='light' icon='add'>Create a new document </Button></Link>
+          </div>
           <div className="doc-container">
             {this.state.docs.map(doc => {
               return  (
                 <p>{doc.title}</p>
               );
             })}
-          </div>
-          <div>
-          <Link to="/newEditor"><Button floating large className='red' waves='light' icon='add'>Create a new document </Button></Link>
           </div>
         </div>
       );
