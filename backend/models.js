@@ -12,6 +12,29 @@ const UserSchema = new mongoose.Schema({
   },
 });
 
+UserSchema.statics.findOrCreate = function(username, password, callback) {
+  User.findOne({ username })
+  .then(user => {
+    if (!user) {
+      User.create({
+        username,
+        password,
+      })
+      .then(resp => { callback(null, resp); }) // register
+      .catch(err => { callback(err, null); }); // error
+    }
+    else if (password !== user.password) { // invalid password
+      callback("Password's do not match.", null);
+    }
+    else { // user authenticated, pass user
+      callback(null, user);
+    }
+  })
+  .catch(err => {
+    callback(err, null);
+  })
+}
+
 const DocSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -25,10 +48,11 @@ const DocSchema = new mongoose.Schema({
     type: String,
     default: '',
   },
-  collaborators: {
-    type: Array,// array of mongoose user ids
-    default: [],// initialize with req.user.id upon POST /doc/new
-  },
+  collaborators: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+
+  }],
   created: {
     type: Date,
     default: new Date().getTime(),

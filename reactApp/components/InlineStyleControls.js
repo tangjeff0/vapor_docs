@@ -13,6 +13,7 @@ var INLINE_STYLES = [
 const InlineStyleControls = (props) => {
   var currentStyle = props.editorState.getCurrentInlineStyle();
   return (
+    <span>
     <div className="RichEditor-controls" style={{display: 'inline'}}>
       {INLINE_STYLES.map(type => {
         return (
@@ -28,9 +29,10 @@ const InlineStyleControls = (props) => {
       )}
       <div style={{marginTop: '-3px', display: 'inline'}}>
         <ColorDropDown onToggle={props.onToggle}/>
-        <FontSizeDropDown onToggle={props.onToggle} />
       </div>
     </div>
+      <FontSizeDropDown onToggle={props.onToggle} />
+    </span>
   );
 };
 

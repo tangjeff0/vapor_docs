@@ -1,19 +1,27 @@
 import React from 'react';
 import axios from 'axios';
+import {Link} from 'react-router-dom';
 import {Button, Icon, Row, Input} from 'react-materialize';
 class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       username: '',
-      password: ''
+      password: '',
+      user: false,
+      docs: []
     };
+
     this.handleInputChange = this.handleInputChange.bind(this);
     this.logInUser = this.logInUser.bind(this);
   }
 
 
-
+  componentDidMount() {
+    if(localStorage.getItem('user')) {
+      this.setState({user: localStorage.getItem('user')});
+    }
+  }
   handleInputChange(event) {
     const target = event.target;
     var value = target.type === 'checkbox' ? target.checked : target.value;
@@ -24,14 +32,34 @@ class Home extends React.Component {
   }
 
   logInUser() {
-    console.log("THISSTATE", this.state);
-    axios.post(process.env.BACKEND_URL + '/user/findOrCreate', this.state)
+    const self = this;
+    axios.post('http://localhost:3000' + '/user/findOrCreate', this.state)
     .then(function(response) {
-      console.log("RESPONSE", response);
+      if(response.data.user) {
+        localStorage.setItem('user', response.data.user);
+        self.setState({user: response.data.user, docs: response.data.docs});
+      }
     });
   }
 
   render() {
+    if(this.state.user) {
+      return (
+        <div className="container loggedin-homepage">
+          <h3 style={{color: 'white'}} >All your documents. In one place. </h3>
+          <div className="doc-container">
+            {this.state.docs.map(doc => {
+              return  (
+                <p>{doc.title}</p>
+              );
+            })}
+          </div>
+          <div>
+          <Link to="/newEditor"><Button floating large className='red' waves='light' icon='add'>Create a new document </Button></Link>
+          </div>
+        </div>
+      );
+    }
     return (
       <div className="container home-page">
         <div className="color-overlay"></div>

@@ -19,7 +19,7 @@ app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveU
 app.use(passport.initialize());
 app.use(passport.session());
 
-// passport 
+// passport
 passport.serializeUser(function(user, done) {
   done(null, user.id);
 });
@@ -32,11 +32,11 @@ passport.deserializeUser(function(id, done) {
 
 passport.use(new LocalStrategy(
   function(username, password, done) {
-    User.findOne({ username }, function (err, user) {
-      if (err) { return done(err); }
-      if (!user) { return done(null, false); }
-      if (user.password !== password) { return done(null, false); }
-      return done(null, user);
+    User.findOrCreate(username, password, function (err, user) {
+      if (err) { return done(err, null); } // error
+      else {
+        return done(null, user); //register
+      }
     });
   }
 ));

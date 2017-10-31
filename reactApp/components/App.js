@@ -10,7 +10,7 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <Route path="/" component={Home} />
+        <Route exact path="/" component={Home} />
         <Route path="/newEditor" component={EditorPage} />
       </div>
     );

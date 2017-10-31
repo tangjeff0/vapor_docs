@@ -6,21 +6,13 @@ module.exports = (passport) => {
 
   const router = express.Router();
 
-  router.post('/user/new', (req, res) => {
-    User.create({
-      username: req.body.username,
-      password: req.body.password,
-    })
-      .then(resp => {
-        res.json({message: 'user created!', user: resp});
-      })
-      .catch(err => {
-        res.json({message: 'user failed to create: ' + err});
-      });
-  });
+  router.post('/user/findOrCreate', passport.authenticate('local'), (req, res) => {
+    // want a list of all documents under this user.
+    Doc.find({collaborators: req.user.id})
+    .then(docs => {
+      res.json({ user: req.user, docs });
+    });
 
-  router.post('/user/login', passport.authenticate('local'), (req, res) => {
-    res.json({message: 'localStrategy authenticated!', user: req.user});
   });
 
   router.use((req, res, next) => {
