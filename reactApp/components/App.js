@@ -1,6 +1,7 @@
 import React from 'react';
-import MyEditor from './MyEditor';
-
+import EditorPage from './EditorPage';
+import Home from './Home';
+import {Route} from 'react-router-dom';
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -8,9 +9,9 @@ class App extends React.Component {
 
   render() {
     return (
-      <div className="container">
-        <h3>Collaborative Text editor</h3>
-        <MyEditor />
+      <div>
+        <Route exact path="/" component={Home} />
+        <Route path="/newEditor" component={EditorPage} />
       </div>
     );
   }

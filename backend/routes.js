@@ -6,42 +6,18 @@ module.exports = (passport) => {
 
   const router = express.Router();
 
-  router.post('/user/new', (req, res) => {
-    User.create({
-      username: req.body.username,
-      password: req.body.password,
-    })
-      .then(resp => {
-        res.json({message: 'user created!', user: resp});
-      })
-      .catch(err => {
-        res.json({message: 'user failed to create: ' + err});
-      });
-  });
+  router.post('/user/findOrCreate', passport.authenticate('local'), (req, res) => {
+    // want a list of all documents under this user.
+    Doc.find({collaborators: req.user.id})
+    .then(docs => {
+      res.json({ user: req.user, docs });
+    });
 
-  router.post('/user/login', passport.authenticate('local'), (req, res) => {
-    res.json({message: 'localStrategy authenticated!', user: req.user});
   });
 
   router.use((req, res, next) => {
     if (!req.user) res.json({message: 'gotta be logged in fa dat ;)'});
     else next();
-  });
-
-  router.post('/doc/new', (req, res) => {
-    if (!req.body.password) res.json({message: 'doc needs a password!'});
-    else {
-      Doc.create({
-        password: req.body.password,
-        collaborators: [req.user.id],
-      })
-      .then(resp => {
-        res.json({doc: resp});
-      })
-      .catch(err => {
-        res.json({error_message: err});
-      });
-    }
   });
 
   router.get('/docs', (req, res) => {
@@ -69,10 +45,27 @@ module.exports = (passport) => {
       });
   });
 
+  router.post('/doc/new', (req, res) => {
+    Doc.create({
+      password: req.body.password,
+      collaborators: [req.user.id],
+      title: req.body.title
+    })
+    .then(resp => {
+      res.json({doc: resp});
+    })
+    .catch(err => {
+      res.json({error_message: err});
+    });
+  });
+
   router.put('/doc/:id', (req, res) => {
     Doc.findById(req.params.id)
       .then(doc => {
+        doc.title =  req.body.title || doc.title;
         doc.contents = req.body.contents;
+        doc.last_edit = new Date().getTime();
+        doc.revision_history = [...doc.revision_history, req.body.contents];
         doc.save(err => {
           if (!err) res.json({doc});
         });

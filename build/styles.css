@@ -1,0 +1,125 @@
+
+.home-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-image: url("https://thumbs.mic.com/NTYxNDYyYTgwMCMvdjBHZmQyT0l0SXNJY0ROOGZMVnJSWjJMNVZnPS82NXgxMjI6MTE5NHg3NDIvMTYwMHg5MDAvZmlsdGVyczpmb3JtYXQoanBlZyk6cXVhbGl0eSg4MCkvaHR0cHM6Ly9zMy5hbWF6b25hd3MuY29tL3BvbGljeW1pYy1pbWFnZXMvY2R4ZWNubnhvZndtamJscjhubXB5cWZybGZsbHcybjk4ajF1NWQ4OWxhZXRwMXVuODV3MXZxOTRxaDllbm5lbS5qcGc.jpg");
+  background-color: rgba(0,0,0,0.6);
+  position: absolute;
+  width: 100%;
+  height:100%;
+  top: 0;
+  left: 0;
+}
+
+.loggedin-homepage {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  background-color: #2bbbad;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0
+}
+.color-overlay {
+  position: absolute;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   background-color: black;
+   opacity: 0.5;
+}
+
+.RichEditor-root {
+  background: #fff;
+  border: 1px solid #ddd;
+  font-family: 'Georgia', serif;
+  font-size: 14px;
+  padding: 15px;
+  overflow-y: scroll;
+}
+
+.RichEditor-editor {
+  height: 350px;
+  cursor: pointer;
+  margin-top: 40px;
+}
+ul {
+  list-style-type: circle !important;
+  margin-left: 30px;
+}
+ul > li {
+    color: black;
+    list-style-type: circle !important;
+}
+
+.RichEditor-styleButton {
+  color: #999;
+  cursor: pointer;
+  margin-right: 16px;
+  padding: 2px 0;
+  display: inline-block;
+}
+
+.RichEditor-activeButton {
+  color: #5890ff;
+}
+
+.save-doc {
+  background-color: #4e8fff;
+  margin-top: 20px;
+  float: right;
+}
+
+.save-doc .material-icons {
+  margin-right: 7px;
+}
+.align-right div {
+    text-align: right;
+}
+.align-center div {
+    text-align: center;
+}
+.align-left div {
+    text-align: left;
+}
+.toolbar-wrapper {
+  position: fixed;
+  margin-bottom: 20px;
+}
+.dropdown-icon {
+  margin-left: -2px !important;
+  margin-top: -1px;
+}
+.red-dropdown {
+  color: red;
+}
+.blue-dropdown {
+  color: blue;
+}
+
+.green-dropdown {
+  color: green;
+}
+
+.dropdown-content {
+  margin-top: 24px;
+}
+.title-row{
+    margin-top: 20px;
+}
+.title-input {
+
+  color: white;
+  font-size: 20px !important;
+  margin-top: 10px;
+}
+
+.title-row label{
+  color: white;
+  font-size: 20px;
+}

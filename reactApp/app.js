@@ -1,5 +1,6 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
+import {MemoryRouter} from 'react-router-dom';
 
 import App from './components/App';
 /* This can check if your electron app can communicate with your backend */
@@ -9,5 +10,7 @@ import App from './components/App';
 // .catch(err => {throw err})
 
 ReactDOM.render(
-  <App />,
+  <MemoryRouter>
+    <App />
+  </MemoryRouter>,
    document.getElementById('root'));

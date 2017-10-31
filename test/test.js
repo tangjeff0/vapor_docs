@@ -13,7 +13,7 @@ const agent = chai.request.agent(server);
 let docId0;
 
 describe('Milestone 2 Tests', () => {
-  
+
   before(done => {
     User.remove()
     .then(function() {
@@ -24,9 +24,10 @@ describe('Milestone 2 Tests', () => {
     });
   });
 
-  describe('POST /user/new', () => {
-    it('should register a user', (done) => {
-      notAgent.post('/user/new')
+  describe('POST /user/findOrCreate', () => {
+
+    it('should return a user bc none exists yet', (done) => {
+      agent.post('/user/findOrCreate')
         .send({
           username: 'testJefe',
           password: 'baseball',
@@ -34,25 +35,35 @@ describe('Milestone 2 Tests', () => {
         .end((err, res) => {
           expect(res).to.have.status(200);
           expect(res.body.user).to.be.an('object').with.any.keys('username', 'password');
-          expect(res);
           done();
         });
     });
-  });
 
-  describe('POST /user/login', () => {
-    it('should login with local strategy', (done) => {
-      agent.post('/user/login')
+    it('should login with same passwords', (done) => {
+      agent.post('/user/findOrCreate')
         .send({
           username: 'testJefe',
           password: 'baseball',
         })
         .end((err, res) => {
           expect(res).to.have.status(200);
-          expect(res.body.user).to.be.an('object').that.includes.any.keys('username', 'password');
           done();
         });
     });
+
+    it('should return a message bc passwords do not match', (done) => {
+      agent.post('/user/findOrCreate')
+        .send({
+          username: 'testJefe',
+          password: 'football',
+        })
+        .end((err, res) => {
+          expect(res.body).to.be.an('object').that.is.empty;
+          expect(res).to.have.status(500);//but this res.status comes from passport.authenticate, not mongoose
+          done();
+        });
+    });
+
   });
 
   describe('POST /doc/new', () => {
