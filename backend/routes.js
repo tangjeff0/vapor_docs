@@ -21,7 +21,7 @@ module.exports = (passport) => {
   });
 
   router.get('/docs', (req, res) => {
-    Doc.find().sort({last_edited: -1})
+    Doc.find({collaborators: req.user.id}).sort({last_edited: -1})
       .then(resp => {
         res.json({docs: resp});
       })
