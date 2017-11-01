@@ -16,7 +16,7 @@ app.use(require('cookie-parser')());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({ secret: 'keyboard cat',
-  store: new MongoStore({mongooseConnection: mongoose.connection}), 
+  store: new MongoStore({mongooseConnection: mongoose.connection}),
   save: true,
   saveUninitialized: true,
 }));
@@ -61,22 +61,34 @@ const io = require('socket.io').listen(server);
 io.on('connect', onConnect);
 
 function onConnect(socket) {
-  let ctr = 0;
 
-  socket.on('connect', () => {
+  const colorAssignment = ['blue', 'red', 'yellow', 'green', 'purple', 'cyan'];
+
+  // console.log("IS IT GETTING IN?", socket);
+  const rooms = io.sockets.adapter.rooms;
+  socket.on('connection', (room) => {
     // add new cursor color to beginning of all text editors
-    ctr++;
+    //on join they should be updated on what
+    socket.join(room);
+    console.log("new user joined", rooms[room]);
+    if(rooms[room]['currentContentState']) {
+      socket.emit('state update', rooms[room]['currentContentState']);
+    }
+    socket.emit('color assign', colorAssignment[rooms[room]['length']]);
   });
 
   socket.on('disconnect', () => {
     // remove that cursor from all editors
-    ctr--;
     console.log('user disconnected');
   });
 
   socket.on('change doc', (contents) => {
     // chnage doc across all editors
-    socket.broadcast.emit('change doc', contents);
+    if(io.sockets.adapter.rooms[contents.room]) {
+      io.sockets.in(contents.room).emit('change doc', contents.content);
+      rooms[contents.room]['currentContentState'] = contents.content;
+    }
+
   });
 
 }
