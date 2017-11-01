@@ -70,8 +70,7 @@ class MyEditor extends React.Component {
       console.log("new selectionState", newSelectionState);
       newContentState = Modifier.insertText(newContentState, newSelectionState, '|', {fontSize: '20px', color: 'blue'});
       console.log("even newer contentState", newContentState);
-      let newEditorState = EditorState.createWithContent(newContentState);
-      this.setState({editorState: newEditorState});
+      this.setState({editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(contents.content)))});
 
     });
   }
