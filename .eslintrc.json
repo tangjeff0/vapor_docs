@@ -27,8 +27,8 @@
     "no-native-reassign": 2,
     "react/jsx-uses-react": 2,
     "react/jsx-uses-vars": 2,
-    "react/react-in-jsx-scope": 2
-    "globals": [2, { "$": false }]
+    "react/react-in-jsx-scope": 2,
+    "globals": [1, { "$": false }]
   },
   "plugins": [
     "react"
