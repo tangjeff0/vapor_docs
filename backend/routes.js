@@ -95,11 +95,11 @@ module.exports = (passport) => {
     .then(user => {
       Doc.findById(req.body.docId)
       .then(doc => {
-        if (doc.collaborators.indexOf(user._id) > - 1) {
+        if (doc.collaborators.indexOf(user.id) > - 1) {
           res.json({addedCollab: false, err: `user ${req.body.newCollab} is already a collaborator!`});
         }
         else {
-          doc.collaborators = [...doc.collaborators, user._id];
+          doc.collaborators = [...doc.collaborators, user.id];
           doc.save()
           .then(resp => res.json({addedCollab: true, collaborators: resp.collaborators}))
         }
