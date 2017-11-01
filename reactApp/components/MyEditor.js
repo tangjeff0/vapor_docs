@@ -36,14 +36,16 @@ class MyEditor extends React.Component {
       password: '',
       title: ''
     };
-    this.onChange = (editorState) => this.setState({editorState});
+    this.onChange = (editorState) => {
+      this.setState({editorState});
+      this.props.socket.emit('change doc', editorState.getCurrentContent());
+    };
     this.focus = () => this.domEditor.focus();
     this._toggleInlineStyle = this._toggleInlineStyle.bind(this);
     this._toggleBlockStyle = this._toggleBlockStyle.bind(this);
     this.setDomEditorRef = ref => this.domEditor = ref;
     this.handleInputChange = this.handleInputChange.bind(this);
     this.saveDoc = this.saveDoc.bind(this);
-    this.handleInputChange = this.handleInputChange.bind(this);
     this.saveModal = this.saveModal.bind(this);
   }
 
@@ -55,6 +57,11 @@ class MyEditor extends React.Component {
     }
   }
 
+  componentWillUpdate() {
+    this.props.socket.on('change doc', contents => {
+      this.setState({editorState: EditorState.createWithContent(contents)});
+    });
+  }
   getDoc() {
     axios.get('http://localhost:3000/doc/' + this.props.docId)
     .then(resp => {

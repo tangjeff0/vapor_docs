@@ -16,7 +16,7 @@ app.use(require('cookie-parser')());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({ secret: 'keyboard cat',
-  store: new MongoStore({mongooseConnection: mongoose.connection}), 
+  store: new MongoStore({mongooseConnection: mongoose.connection}),
   save: true,
   saveUninitialized: true,
 }));
@@ -62,10 +62,15 @@ io.on('connect', onConnect);
 
 function onConnect(socket) {
   let ctr = 0;
-
-  socket.on('connect', () => {
+  let currentContentState; // keep track of currentContent state to send to users.
+  const colorAssignment = ['blue', 'red', 'yellow', 'green', 'purple', 'cyan'];
+  // console.log("IS IT GETTING IN?", socket);
+  console.log("getting in?");
+  socket.on('connection', () => {
     // add new cursor color to beginning of all text editors
+    //on join they should be updated on what
     ctr++;
+    console.log("new user joined", ctr);
   });
 
   socket.on('disconnect', () => {
@@ -77,6 +82,7 @@ function onConnect(socket) {
   socket.on('change doc', (contents) => {
     // chnage doc across all editors
     socket.broadcast.emit('change doc', contents);
+    currentContentState = contents;
   });
 
 }
