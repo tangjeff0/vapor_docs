@@ -59,13 +59,14 @@ class MyEditor extends React.Component {
     this.addCollab = this.addCollab.bind(this);
     this.props.socket.on('change doc', contents => {
       console.log("CONTENETS", contents);
-      let newContentState = EditorState.createWithContent(convertFromRaw(JSON.parse(contents.content)));
+      let newContentState = EditorState.createWithContent(convertFromRaw(JSON.parse(contents.content))).getCurrentContent();
       let newSelectionState = SelectionState.createEmpty(contents.focusKey);
       console.log("new contentState", newContentState);
       console.log("new selectionState", newSelectionState);
       newContentState = Modifier.insertText(newContentState, newSelectionState, '|', {fontSize: '20px', color: 'blue'});
       console.log("even newer contentState", newContentState);
-      this.setState({editorState: newContentState});
+      let newEditorState = EditorState.createWithContent(newContentState);
+      this.setState({editorState: newEditorState});
 
     });
   }
