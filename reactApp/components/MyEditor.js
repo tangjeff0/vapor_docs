@@ -140,14 +140,14 @@ class MyEditor extends React.Component {
       newCollab: this.state.newCollab,
     })
     .then(resp => {
-      console.log('addCollab request sent', resp.data)
+      console.log('addCollab request sent', resp.data);
       if (resp.data.addedCollab) {
         $('#collabModal').modal('close');
       }
     })
     .catch(resp => {
       console.log(resp);
-    })
+    });
   }
 
 
