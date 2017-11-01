@@ -7,11 +7,15 @@ module.exports = (passport) => {
   const router = express.Router();
 
   router.post('/user/findOrCreate', passport.authenticate('local'), (req, res) => {
+
     // want a list of all documents under this user.
     Doc.find({collaborators: req.user.id})
     .then(docs => {
       res.json({ user: req.user, docs });
     });
+
+    /* if (req.user) */
+    /* res.redirect('/docs'); */
 
   });
 
@@ -21,7 +25,13 @@ module.exports = (passport) => {
   });
 
   router.get('/docs', (req, res) => {
-    Doc.find({collaborators: req.user.id}).sort({last_edited: -1})
+
+    /* // passport */
+    /* passport.serializeUser(function(user, done) { */
+    /*   done(null, user.id); */
+    /* }); */
+
+    Doc.find({collaborators: req.user.id}).sort({last_edit: -1})
     .then(resp => {
       res.json({docs: resp});
     })

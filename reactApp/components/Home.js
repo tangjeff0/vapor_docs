@@ -24,10 +24,9 @@ class Home extends React.Component {
     if(localStorage.getItem('user')) {
       this.setState({user: localStorage.getItem('user')});
     }
-    const self = this;
     axios.get('http://localhost:3000/docs')
-    .then(function(response) {
-      self.setState({docs: response.data.docs});
+    .then(response => {
+      this.setState({docs: response.data.docs});
     });
   }
 
@@ -59,12 +58,11 @@ class Home extends React.Component {
   }
 
   logInUser() {
-    const self = this;
     axios.post('http://localhost:3000' + '/user/findOrCreate', this.state)
-    .then(function(response) {
+    .then(response => {
       if(response.data.user) {
         localStorage.setItem('user', response.data.user);
-        self.setState({user: response.data.user, docs: response.data.docs});
+        this.setState({user: response.data.user, docs: response.data.docs});
       }
     });
   }
