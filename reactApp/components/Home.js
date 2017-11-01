@@ -8,10 +8,11 @@ class Home extends React.Component {
     this.state = {
       username: '',
       password: '',
-      docId: '',// for checkDocPassword()
+      docId: '',
       docPassword: '',
-      locked: true,
-      user: false,
+      lockedDoc: true,
+      user: null,
+      mongoStore: null,
       docs: []
     };
 
@@ -21,13 +22,14 @@ class Home extends React.Component {
   }
 
   componentDidMount() {
-    if(localStorage.getItem('user')) {
-      this.setState({user: localStorage.getItem('user')});
+    const objUser = JSON.parse(localStorage.getItem('user'));
+    this.setState({user: objUser || null});
+    if (!this.state.mongoStore && objUser) {
+      axios.post('http://localhost:3000/user/findOrCreate', objUser)
+      .then(resp => {
+        this.setState({docs: resp.data.docs, mongoStore: true});
+      });
     }
-    axios.get('http://localhost:3000/docs')
-    .then(response => {
-      this.setState({docs: response.data.docs});
-    });
   }
 
   handleInputChange(event) {
@@ -47,7 +49,7 @@ class Home extends React.Component {
     .then(resp => {
       this.setState({progressBar: true});
       if (resp.data.wasCorrectPassword) {
-        this.setState({locked: false});
+        this.setState({lockedDoc: false});
       } else {
         console.log('wrong password :(!', resp);//give visual feedback as well
       }
@@ -59,10 +61,12 @@ class Home extends React.Component {
 
   logInUser() {
     axios.post('http://localhost:3000' + '/user/findOrCreate', this.state)
-    .then(response => {
-      if(response.data.user) {
-        localStorage.setItem('user', response.data.user);
-        this.setState({user: response.data.user, docs: response.data.docs});
+    .then(resp => {
+      if(resp.data.user) {
+        const strUser = JSON.stringify(resp.data.user);
+        console.log('hi', resp.data.user, strUser);
+        localStorage.setItem('user', strUser);
+        this.setState({user: resp.data.user, docs: resp.data.docs});
       }
     });
   }
@@ -94,7 +98,7 @@ class Home extends React.Component {
           id='docPasswordModal'
           header='Doc Password'
           actions={
-            this.state.locked ?
+            this.state.lockedDoc ?
               <Button onClick={this.checkDocPassword} waves='light' className="save-doc">locked<Icon left>lock</Icon></Button>
               :
               <Link to={'/doc/' + this.state.docId}>
@@ -105,7 +109,6 @@ class Home extends React.Component {
           }
         >
           <Input onChange={this.handleInputChange} value={this.state.docPassword} name="docPassword" type="password" label="password" s={12} />
-						
         </Modal>
 
         </div>
