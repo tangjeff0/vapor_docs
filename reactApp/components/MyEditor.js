@@ -87,6 +87,7 @@ class MyEditor extends React.Component {
     else {
       axios.put('http://localhost:3000/doc/' + this.state.docId, {
         contents: JSON.stringify(convertToRaw(this.state.editorState.getCurrentContent())),
+        title: this.state.title,
       })
       .then(resp => {
         console.log('convertToRaw', convertToRaw(this.state.editorState.getCurrentContent()));
