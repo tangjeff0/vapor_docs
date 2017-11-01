@@ -34,11 +34,12 @@ class MyEditor extends React.Component {
       editorState: EditorState.createEmpty(),
       docId: '',
       password: '',
-      title: ''
+      title: '',
+      newCollab: '',
     };
     this.onChange = (editorState) => {
       this.setState({editorState});
-      this.props.socket.emit('change doc', {content: editorState.getCurrentContent(), room : this.state.docId});
+      this.props.socket.emit('change doc', {content: JSON.stringify(convertToRaw(editorState.getCurrentContent())), room : this.state.docId});
     };
     this.focus = () => this.domEditor.focus();
     this._toggleInlineStyle = this._toggleInlineStyle.bind(this);
@@ -47,6 +48,11 @@ class MyEditor extends React.Component {
     this.handleInputChange = this.handleInputChange.bind(this);
     this.saveDoc = this.saveDoc.bind(this);
     this.saveModal = this.saveModal.bind(this);
+    this.addCollab = this.addCollab.bind(this);
+    this.props.socket.on('change doc', contents => {
+      console.log("CONTENETS", contents);
+      this.setState({editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(contents)))});
+    });
   }
 
   componentDidMount() {
@@ -57,11 +63,7 @@ class MyEditor extends React.Component {
     }
   }
 
-  componentWillUpdate() {
-    this.props.socket.on('change doc', contents => {
-      this.setState({editorState: EditorState.createWithContent(contents)});
-    });
-  }
+
   getDoc() {
     axios.get('http://localhost:3000/doc/' + this.props.docId)
     .then(resp => {
@@ -139,14 +141,41 @@ class MyEditor extends React.Component {
     );
   }
 
+  addCollab() {
+    axios.post('http://localhost:3000/' + 'addCollab', {
+      docId: this.state.docId,
+      newCollab: this.state.newCollab,
+    })
+    .then(resp => {
+      console.log('addCollab request sent', resp.data);
+      if (resp.data.addedCollab) {
+        $('#collabModal').modal('close');
+      }
+    })
+    .catch(resp => {
+      console.log(resp);
+    });
+  }
+
+
   render() {
     let className = 'RichEditor-editor';
     const {editorState} = this.state;
 
     return (
+
       <div className="wrapper" style={{width: '95%'}}>
+
+			<Modal id='collabModal'
+				header='Add collaborators'
+        actions={<Button onClick={this.addCollab} waves='light' className="save-doc">invite<Icon left>group_add</Icon></Button>}
+      >
+				<Input onChange={this.handleInputChange} value={this.state.newCollab} name="newCollab" type="text" label="username" s={12} />
+			</Modal>
+
       <Row className="title-row">
         <Input className="title-input" s={6} name="title" label={this.state.title ? null : "Title"} value={this.state.title} onChange={this.handleInputChange}/>
+        <Button onClick={() => $('#collabModal').modal('open')} waves='light' className="save-doc">invite<Icon left>group_add</Icon></Button>
       </Row>
       <div className="RichEditor-root">
           <div className="toolbar-wrapper">
@@ -164,8 +193,7 @@ class MyEditor extends React.Component {
           </div>
       </div>
 
-			<Modal
-				id='saveModal'
+			<Modal id='saveModal'
 				header='New DocTing - please enter password'
         actions={<Button onClick={this.saveModal} waves='light' className="save-doc">Save<Icon left>save</Icon></Button>}
       >

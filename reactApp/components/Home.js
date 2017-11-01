@@ -8,14 +8,17 @@ class Home extends React.Component {
     this.state = {
       username: '',
       password: '',
+      docId: '',// for checkDocPassword()
+      docPassword: '',
+      locked: true,
       user: false,
       docs: []
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.logInUser = this.logInUser.bind(this);
+    this.checkDocPassword = this.checkDocPassword.bind(this);
   }
-
 
   componentDidMount() {
     if(localStorage.getItem('user')) {
@@ -24,7 +27,6 @@ class Home extends React.Component {
     const self = this;
     axios.get('http://localhost:3000/docs')
     .then(function(response) {
-      /* console.log("RESP", response); */
       self.setState({docs: response.data.docs});
     });
   }
@@ -35,6 +37,24 @@ class Home extends React.Component {
     const name = target.name;
     this.setState({
       [name]: value
+    });
+  }
+  
+  checkDocPassword() {
+    axios.post('http://localhost:3000' + '/checkDocPassword', {
+      docId: this.state.docId,
+      docPassword: this.state.docPassword,
+    })
+    .then(resp => {
+      this.setState({progressBar: true});
+      if (resp.data.wasCorrectPassword) {
+        this.setState({locked: false});
+      } else {
+        console.log('wrong password :(!', resp);//give visual feedback as well
+      }
+    })
+    .catch(err => {
+      console.log('ERROR', err);
     });
   }
 
@@ -60,10 +80,36 @@ class Home extends React.Component {
           <div className="doc-container">
             {this.state.docs.map(doc => {
               return (
-                <Link key={doc._id} to={'/doc/' + doc._id }><p>{doc.title}</p></Link>
+                <p key={doc._id}>
+                  <a href='#' onClick={() => {
+                    this.setState({docId: doc._id});
+                    $('#docPasswordModal').modal('open');
+                  }}>
+                    {doc.title}
+                  </a>
+                </p>
               );
             })}
           </div>
+
+        <Modal
+          id='docPasswordModal'
+          header='Doc Password'
+          actions={
+            this.state.locked ?
+              <Button onClick={this.checkDocPassword} waves='light' className="save-doc">locked<Icon left>lock</Icon></Button>
+              :
+              <Link to={'/doc/' + this.state.docId}>
+                <Button onClick={() => $('#docPasswordModal').modal('close')} waves='light' className="save-doc">unlocked<Icon left>lock_open</Icon>
+                </Button>
+              </Link>
+        
+          }
+        >
+          <Input onChange={this.handleInputChange} value={this.state.docPassword} name="docPassword" type="password" label="password" s={12} />
+						
+        </Modal>
+
         </div>
       );
     }
@@ -77,11 +123,6 @@ class Home extends React.Component {
           <Input onChange={this.handleInputChange} value={this.state.password} name="password" type="password" label="password" s={12} />
         </Row>
         <Button onClick={this.logInUser} waves='light'>Log in to Docs<Icon left>exit_to_app</Icon></Button>
-        <Modal
-          id='passwordModal'
-          header=''
-          actions={<Button onClick={this.saveModal} waves='light' className="save-doc">Save<Icon left>save</Icon></Button>}
-        />
         </div>
       </div>
     );
