@@ -38,7 +38,7 @@ class MyEditor extends React.Component {
     };
     this.onChange = (editorState) => {
       this.setState({editorState});
-      this.props.socket.emit('change doc', editorState.getCurrentContent());
+      this.props.socket.emit('change doc', {content: editorState.getCurrentContent(), room : this.state.docId});
     };
     this.focus = () => this.domEditor.focus();
     this._toggleInlineStyle = this._toggleInlineStyle.bind(this);

@@ -15,7 +15,7 @@ class EditorPage extends React.Component {
   }
   componentDidMount() {
     console.log("this.state socket", this.state.socket);
-    this.state.socket.emit('connection');
+    this.state.socket.emit('connection', this.props.docId);
   }
   render() {
     return (

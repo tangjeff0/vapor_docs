@@ -61,28 +61,34 @@ const io = require('socket.io').listen(server);
 io.on('connect', onConnect);
 
 function onConnect(socket) {
-  let ctr = 0;
-  let currentContentState; // keep track of currentContent state to send to users.
+
   const colorAssignment = ['blue', 'red', 'yellow', 'green', 'purple', 'cyan'];
+
   // console.log("IS IT GETTING IN?", socket);
-  console.log("getting in?");
-  socket.on('connection', () => {
+  const rooms = io.sockets.adapter.rooms;
+  socket.on('connection', (room) => {
     // add new cursor color to beginning of all text editors
     //on join they should be updated on what
-    ctr++;
-    console.log("new user joined", ctr);
+    socket.join(room);
+    console.log("new user joined", rooms[room]);
+    if(rooms[room]['currentContentState']) {
+      socket.emit('state update', rooms[room]['currentContentState']);
+    }
+    socket.emit('color assign', colorAssignment[rooms[room]['length']]);
   });
 
   socket.on('disconnect', () => {
     // remove that cursor from all editors
-    ctr--;
     console.log('user disconnected');
   });
 
   socket.on('change doc', (contents) => {
     // chnage doc across all editors
-    socket.broadcast.emit('change doc', contents);
-    currentContentState = contents;
+    if(io.sockets.adapter.rooms[contents.room]) {
+      io.sockets.in(contents.room).emit('change doc', contents.content);
+      rooms[contents.room]['currentContentState'] = contents.content;
+    }
+
   });
 
 }
