@@ -65,6 +65,7 @@ class MyEditor extends React.Component {
       // set(newSelectionState, 'focusOffset', contents.selectionState.focusOffset);
       console.log("focus", contents.selectionState.focusOffset);
       newSelectionState = newSelectionState.set('focusOffset', contents.selectionState.focusOffset);
+      newSelectionState = newSelectionState.set('anchorOffset', contents.selectionState.focusOffset);
       console.log("new contentState", newContentState);
       console.log("new selectionState", newSelectionState);
       newContentState = Modifier.insertText(newContentState, newSelectionState, '|', {fontSize: '20px', color: 'blue'});
