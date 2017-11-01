@@ -1,5 +1,5 @@
 import React from 'react';
-import {Editor, EditorState, RichUtils} from 'draft-js';
+import {Editor, EditorState, RichUtils, convertFromRaw, convertToRaw} from 'draft-js';
 import {Button, Icon, Row, Input, Modal} from 'react-materialize';
 import axios from 'axios';
 
@@ -45,11 +45,30 @@ class MyEditor extends React.Component {
     this.saveDoc = this.saveDoc.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.saveModal = this.saveModal.bind(this);
-
   }
 
-  componentDidMount(){
+  componentDidMount() {
     this.domEditor.focus();
+    if (this.props.docId) {
+      this.setState({docId: this.props.docId});
+      this.getDoc();
+    }
+  }
+
+  getDoc() {
+    axios.get('http://localhost:3000/doc/' + this.props.docId)
+    .then(resp => {
+      const parsed = JSON.parse(resp.data.doc.contents);
+      const newEditorState = convertFromRaw(parsed);
+      console.log('convertFromRaw', newEditorState);
+      this.setState({
+        title: resp.data.doc.title,
+        editorState: EditorState.createWithContent(newEditorState),
+      });
+    })
+    .catch(err => {
+      console.log('Error getting docs:', err);
+    });
   }
 
   handleInputChange(event) {
@@ -67,10 +86,10 @@ class MyEditor extends React.Component {
     }
     else {
       axios.put('http://localhost:3000/doc/' + this.state.docId, {
-        contents: JSON.stringify(this.state.editorState.getCurrentContent()),
+        contents: JSON.stringify(convertToRaw(this.state.editorState.getCurrentContent())),
       })
       .then(resp => {
-        console.log(resp);
+        console.log('convertToRaw', convertToRaw(this.state.editorState.getCurrentContent()));
       })
       .catch(err => {
         console.log(err);
@@ -79,10 +98,10 @@ class MyEditor extends React.Component {
   }
 
   saveModal() {
-    console.log("WOAH", this.state.title);
     axios.post('http://localhost:3000/doc/new', {
       password: this.state.password,
-      title: this.state.title
+      title: this.state.title,
+      contents: JSON.stringify(convertToRaw(this.state.editorState.getCurrentContent())),
     })
     .then(resp => {
       console.log(resp);
@@ -112,8 +131,6 @@ class MyEditor extends React.Component {
     );
   }
 
-
-
   render() {
     let className = 'RichEditor-editor';
     const {editorState} = this.state;
@@ -121,7 +138,7 @@ class MyEditor extends React.Component {
     return (
       <div className="wrapper" style={{width: '95%'}}>
       <Row className="title-row">
-        <Input className="title-input" s={6} name="title" label="Title" value={this.state.title} onChange={this.handleInputChange}/>
+        <Input className="title-input" s={6} name="title" label={this.state.title ? null : "Title"} value={this.state.title} onChange={this.handleInputChange}/>
       </Row>
       <div className="RichEditor-root">
           <div className="toolbar-wrapper">

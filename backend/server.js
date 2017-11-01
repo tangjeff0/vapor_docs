@@ -18,7 +18,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({ secret: 'keyboard cat',
   store: new MongoStore({mongooseConnection: mongoose.connection}), 
   save: true,
-  saveUninitialized: true }));
+  saveUninitialized: true,
+}));
 
 app.use(passport.initialize());
 app.use(passport.session());
