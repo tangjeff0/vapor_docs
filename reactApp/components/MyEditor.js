@@ -1,5 +1,5 @@
 import React from 'react';
-import {Editor, EditorState, RichUtils, convertFromRaw, convertToRaw, Modifier} from 'draft-js';
+import {Editor, EditorState, RichUtils, convertFromRaw, convertToRaw, Modifier, SelectionState} from 'draft-js';
 import {Button, Icon, Row, Input, Modal} from 'react-materialize';
 import axios from 'axios';
 
@@ -59,7 +59,9 @@ class MyEditor extends React.Component {
     this.props.socket.on('change doc', contents => {
       console.log("CONTENETS", contents);
       let newContentState = EditorState.createWithContent(convertFromRaw(JSON.parse(contents.content)));
-      Modifier.insertText(newContentState, contents.selectionState, '|', {fontSize: '20px', color: 'blue'});
+      let newSelectionState = SelectionState.createEmpty(contents.selectionState.anchorKey);
+      console.log("new selectionState", newSelectionState);
+      Modifier.insertText(newContentState, newSelectionState, '|', {fontSize: '20px', color: 'blue'});
       this.setState({editorState: newContentState});
 
     });
