@@ -49,6 +49,10 @@ class MyEditor extends React.Component {
     this.saveDoc = this.saveDoc.bind(this);
     this.saveModal = this.saveModal.bind(this);
     this.addCollab = this.addCollab.bind(this);
+    this.props.socket.on('change doc', contents => {
+      console.log("CONTENETS", contents);
+      this.setState({editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(contents)))});
+    });
   }
 
   componentDidMount() {
@@ -59,12 +63,7 @@ class MyEditor extends React.Component {
     }
   }
 
-  componentWillUpdate() {
-    this.props.socket.on('change doc', contents => {
-      console.log("CONTENETS", contents);
-      this.setState({editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(contents)))});
-    });
-  }
+
   getDoc() {
     axios.get('http://localhost:3000/doc/' + this.props.docId)
     .then(resp => {
