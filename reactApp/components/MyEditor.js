@@ -40,13 +40,14 @@ class MyEditor extends React.Component {
     this.onChange = (editorState) => {
       this.setState({editorState});
       var selectionState = editorState.getSelection();
+      var focusKey = selectionState.getFocusKey();
       // var anchorKey = selectionState.getAnchorKey();
       // var currentContent = editorState.getCurrentContent();
       // var currentContentBlock = currentContent.getBlockForKey(anchorKey);
       // var start = selectionState.getStartOffset();
       // var end = selectionState.getEndOffset();
       // var selectedText = currentContentBlock.getText().slice(start, end);
-      this.props.socket.emit('change doc', {content: JSON.stringify(convertToRaw(editorState.getCurrentContent())), room : this.state.docId, selectionState});
+      this.props.socket.emit('change doc', {content: JSON.stringify(convertToRaw(editorState.getCurrentContent())), room : this.state.docId, selectionState, focusKey});
     };
     this.focus = () => this.domEditor.focus();
     this._toggleInlineStyle = this._toggleInlineStyle.bind(this);
@@ -59,9 +60,11 @@ class MyEditor extends React.Component {
     this.props.socket.on('change doc', contents => {
       console.log("CONTENETS", contents);
       let newContentState = EditorState.createWithContent(convertFromRaw(JSON.parse(contents.content)));
-      let newSelectionState = SelectionState.createEmpty(contents.selectionState.anchorKey);
+      let newSelectionState = SelectionState.createEmpty(contents.focusKey);
+      console.log("new contentState", newContentState);
       console.log("new selectionState", newSelectionState);
-      Modifier.insertText(newContentState, newSelectionState, '|', {fontSize: '20px', color: 'blue'});
+      newContentState = Modifier.insertText(newContentState, newSelectionState, '|', {fontSize: '20px', color: 'blue'});
+      console.log("even newer contentState", newContentState);
       this.setState({editorState: newContentState});
 
     });
