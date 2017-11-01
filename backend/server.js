@@ -85,7 +85,8 @@ function onConnect(socket) {
   socket.on('change doc', (contents) => {
     // chnage doc across all editors
     if(io.sockets.adapter.rooms[contents.room]) {
-      socket.to(contents.room).emit('change doc', contents.content);
+      console.log("ROOM", io.sockets.adapter.rooms[contents.room]);
+      socket.to(contents.room).emit('change doc', contents);
       rooms[contents.room]['currentContentState'] = contents.content;
     }
 

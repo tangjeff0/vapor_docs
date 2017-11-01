@@ -1,5 +1,5 @@
 import React from 'react';
-import {Editor, EditorState, RichUtils, convertFromRaw, convertToRaw} from 'draft-js';
+import {Editor, EditorState, RichUtils, convertFromRaw, convertToRaw, Modifier} from 'draft-js';
 import {Button, Icon, Row, Input, Modal} from 'react-materialize';
 import axios from 'axios';
 
@@ -39,7 +39,14 @@ class MyEditor extends React.Component {
     };
     this.onChange = (editorState) => {
       this.setState({editorState});
-      this.props.socket.emit('change doc', {content: JSON.stringify(convertToRaw(editorState.getCurrentContent())), room : this.state.docId});
+      var selectionState = editorState.getSelection();
+      // var anchorKey = selectionState.getAnchorKey();
+      // var currentContent = editorState.getCurrentContent();
+      // var currentContentBlock = currentContent.getBlockForKey(anchorKey);
+      // var start = selectionState.getStartOffset();
+      // var end = selectionState.getEndOffset();
+      // var selectedText = currentContentBlock.getText().slice(start, end);
+      this.props.socket.emit('change doc', {content: JSON.stringify(convertToRaw(editorState.getCurrentContent())), room : this.state.docId, selectionState});
     };
     this.focus = () => this.domEditor.focus();
     this._toggleInlineStyle = this._toggleInlineStyle.bind(this);
@@ -51,7 +58,10 @@ class MyEditor extends React.Component {
     this.addCollab = this.addCollab.bind(this);
     this.props.socket.on('change doc', contents => {
       console.log("CONTENETS", contents);
-      this.setState({editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(contents)))});
+      let newContentState = EditorState.createWithContent(convertFromRaw(JSON.parse(contents.content)));
+      Modifier.insertText(newContentState, contents.selectionState, '|', {fontSize: '20px', color: 'blue'});
+      this.setState({editorState: newContentState});
+
     });
   }
 
@@ -161,7 +171,20 @@ class MyEditor extends React.Component {
   render() {
     let className = 'RichEditor-editor';
     const {editorState} = this.state;
-
+    var selectionState = editorState.getSelection();
+    var anchorKey = selectionState.getAnchorKey();
+    var currentContent = editorState.getCurrentContent();
+    var currentContentBlock = currentContent.getBlockForKey(anchorKey);
+    var start = selectionState.getStartOffset();
+    var end = selectionState.getEndOffset();
+    var selectedText = currentContentBlock.getText().slice(start, end);
+    //need to send anchorKey and start and end;
+    console.log("anchorKey", anchorKey);
+    console.log('currentContent', currentContent);
+    console.log("currentContentBlock", currentContentBlock);
+    console.log("start", start);
+    console.log("end", end);
+    console.log("selectedText", selectedText);
     return (
 
       <div className="wrapper" style={{width: '95%'}}>
