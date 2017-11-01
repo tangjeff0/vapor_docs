@@ -22,7 +22,7 @@ class Home extends React.Component {
 
   componentDidMount() {
     if(localStorage.getItem('user')) {
-      this.setState({user: JSON.parse(localStorage.getItem('user'))});
+      this.setState({user: localStorage.getItem('user')});
     }
     const self = this;
     axios.get('http://localhost:3000/docs')
@@ -63,8 +63,8 @@ class Home extends React.Component {
     axios.post('http://localhost:3000' + '/user/findOrCreate', this.state)
     .then(function(response) {
       if(response.data.user) {
-        localStorage.setItem('user', JSON.stringify(response.data.user));
-        self.setState({user: JSON.stringify(response.data.user), docs: response.data.docs});
+        localStorage.setItem('user', response.data.user);
+        self.setState({user: response.data.user, docs: response.data.docs});
       }
     });
   }
