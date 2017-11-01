@@ -56,10 +56,10 @@ const DocSchema = new mongoose.Schema({
     type: Number,
     default: new Date().getTime(),// update each time POST /doc/save
   },
-  collaborators: {
-    type: Array,// array of mongoose user ids
-    default: [],// initialize with req.user.id upon POST /doc/new
-  },
+  collaborators: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
   revision_history: {
     type: Array,
     default: [],// push to upon each PUT /doc/:id
