@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
-import {Link, Redirect} from 'react-router-dom';
-import {Button, Icon, Row, Input, Modal, ProgressBar} from 'react-materialize';
+import {Link} from 'react-router-dom';
+import {Button, Icon, Row, Input, Modal} from 'react-materialize';
 class Home extends React.Component {
   constructor(props) {
     super(props);
