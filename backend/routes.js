@@ -90,5 +90,24 @@ module.exports = (passport) => {
     });
   });
 
+  router.post('/addCollab', (req, res) => {
+    User.findOne({username: req.body.newCollab})
+    .then(user => {
+      Doc.findById(req.body.docId)
+      .then(doc => {
+        if (doc.collaborators.indexOf(user._id) > - 1) {
+          res.json({addedCollab: false, err: `user ${req.body.newCollab} is already a collaborator!`});
+        }
+        else {
+          doc.collaborators = [...doc.collaborators, user._id];
+          doc.save()
+          .then(resp => res.json({addedCollab: true, collaborators: resp.collaborators}))
+        }
+      })
+      .catch(err => res.json({addedColab: false, err: `user ${req.body.newCollab} was not found`}))
+    })
+    .catch(err => res.json({addedColab: false, err}))
+  });
+
   return router;
 };
