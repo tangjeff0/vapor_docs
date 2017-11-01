@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
-import {Button, Icon, Row, Input} from 'react-materialize';
+import {Button, Icon, Row, Input, Modal} from 'react-materialize';
 class Home extends React.Component {
   constructor(props) {
     super(props);
@@ -77,6 +77,11 @@ class Home extends React.Component {
           <Input onChange={this.handleInputChange} value={this.state.password} name="password" type="password" label="password" s={12} />
         </Row>
         <Button onClick={this.logInUser} waves='light'>Log in to Docs<Icon left>exit_to_app</Icon></Button>
+        <Modal
+          id='passwordModal'
+          header=''
+          actions={<Button onClick={this.saveModal} waves='light' className="save-doc">Save<Icon left>save</Icon></Button>}
+        />
         </div>
       </div>
     );
