@@ -39,7 +39,7 @@ class MyEditor extends React.Component {
     };
     this.onChange = (editorState) => {
       this.setState({editorState});
-      this.props.socket.emit('change doc', {content: editorState.getCurrentContent(), room : this.state.docId});
+      this.props.socket.emit('change doc', {content: JSON.stringify(convertToRaw(editorState.getCurrentContent())), room : this.state.docId});
     };
     this.focus = () => this.domEditor.focus();
     this._toggleInlineStyle = this._toggleInlineStyle.bind(this);
@@ -62,7 +62,7 @@ class MyEditor extends React.Component {
   componentWillUpdate() {
     this.props.socket.on('change doc', contents => {
       console.log("CONTENETS", contents);
-      this.setState({editorState: EditorState.createWithContent(convertFromRaw(contents))});
+      this.setState({editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(contents)))});
     });
   }
   getDoc() {
