@@ -13,4 +13,5 @@ ReactDOM.render(
   <MemoryRouter>
     <App />
   </MemoryRouter>,
-   document.getElementById('root'));
+  document.getElementById('root')
+);

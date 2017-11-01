@@ -12,7 +12,7 @@ class EditorPage extends React.Component {
     return (
       <div className="container" style={{backgroundColor: '#2bbbad', paddingTop: '20px', paddingLeft: '40px', position:'absolute', width: '100%', height: '100%', top: '0', left: '0'}}>
         <Link style={{color: 'white', marginBottom: '15px'}} to="/"><Icon>arrow_back</Icon></Link>
-        <MyEditor />
+        <MyEditor docId={this.props.docId} />
       </div>
     );
   }

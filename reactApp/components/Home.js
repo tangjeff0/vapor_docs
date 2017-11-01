@@ -24,7 +24,7 @@ class Home extends React.Component {
     const self = this;
     axios.get('http://localhost:3000/docs')
     .then(function(response) {
-      console.log("RESP", response);
+      /* console.log("RESP", response); */
       self.setState({docs: response.data.docs});
     });
   }
@@ -59,8 +59,8 @@ class Home extends React.Component {
           </div>
           <div className="doc-container">
             {this.state.docs.map(doc => {
-              return  (
-                <p>{doc.title}</p>
+              return (
+                <Link key={doc._id} to={'/doc/' + doc._id }><p>{doc.title}</p></Link>
               );
             })}
           </div>

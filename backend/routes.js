@@ -16,7 +16,7 @@ module.exports = (passport) => {
   });
 
   router.use((req, res, next) => {
-    if (!req.user) res.json({message: 'gotta be logged in fa dat ;)'});
+    if (!req.user) res.status(400).json({message: 'gotta be logged in fa dat ;)'});
     else next();
   });
 
@@ -30,8 +30,8 @@ module.exports = (passport) => {
       });
   });
 
-  router.get('/doc/:id', (req, res) => {
-    Doc.findById(req.params.id)
+  router.get('/doc/:docId', (req, res) => {
+    Doc.findById(req.params.docId)
       .then(resp => {
         if (resp.collaborators.indexOf(req.user.id) === -1) {
           res.json({message: 'sorry, you are not yet a collaborator on this doc :('});
@@ -49,7 +49,8 @@ module.exports = (passport) => {
     Doc.create({
       password: req.body.password,
       collaborators: [req.user.id],
-      title: req.body.title
+      title: req.body.title,
+      contents: req.body.contents,
     })
     .then(resp => {
       res.json({doc: resp});
