@@ -61,7 +61,8 @@ class MyEditor extends React.Component {
 
   componentWillUpdate() {
     this.props.socket.on('change doc', contents => {
-      this.setState({editorState: EditorState.createWithContent(contents)});
+      console.log("CONTENETS", contents);
+      this.setState({editorState: EditorState.createWithContent(convertFromRaw(contents))});
     });
   }
   getDoc() {
