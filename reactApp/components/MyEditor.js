@@ -2,7 +2,7 @@ import React from 'react';
 import {Editor, EditorState, RichUtils, convertFromRaw, convertToRaw, Modifier, SelectionState} from 'draft-js';
 import {Button, Icon, Row, Input, Modal} from 'react-materialize';
 import axios from 'axios';
-
+import {set} from 'immutable';
 import InlineStyleControls from './InlineStyleControls';
 import BlockStyleControls from './BlockStyleControls';
 
@@ -62,7 +62,7 @@ class MyEditor extends React.Component {
       console.log("CONTENETS", contents);
       let newContentState = EditorState.createWithContent(convertFromRaw(JSON.parse(contents.content))).getCurrentContent();
       let newSelectionState = SelectionState.createEmpty(contents.focusKey);
-      newSelectionState.focusOffset = contents.selectionState.focusOffset;
+      set(newSelectionState, 'focusOffset', contents.selectionState.focusOffset);
       console.log("new contentState", newContentState);
       console.log("new selectionState", newSelectionState);
       newContentState = Modifier.insertText(newContentState, newSelectionState, '|', {fontSize: '20px', color: 'blue'});
