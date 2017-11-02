@@ -6,13 +6,18 @@ module.exports = (passport) => {
 
   const router = express.Router();
 
-  router.post('/user/findOrCreate', passport.authenticate('local'), (req, res) => {
+  router.post('/login', passport.authenticate('local'), (req, res) => {
     res.redirect('/docs');
   });
 
   router.use((req, res, next) => {
     if (!req.user) { res.status(400).json({message: 'gotta be logged in fa dat ;)'}); }
     next();
+  });
+
+  router.get('/logout', (req, res) => {
+    req.logout();
+    res.json({msg: 'logged out'});
   });
 
   router.get('/docs', (req, res) => {

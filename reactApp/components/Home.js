@@ -17,7 +17,8 @@ class Home extends React.Component {
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
-    this.logInUser = this.logInUser.bind(this);
+    this.loginUser = this.loginUser.bind(this);
+    this.logoutUser = this.logoutUser.bind(this);
     this.checkDocPassword = this.checkDocPassword.bind(this);
   }
 
@@ -25,7 +26,7 @@ class Home extends React.Component {
     const objUser = JSON.parse(localStorage.getItem('user'));
     this.setState({user: objUser || null});
     if (!this.state.mongoStore && objUser) {
-      axios.post('http://localhost:3000/user/findOrCreate', objUser)
+      axios.post('http://localhost:3000/login', objUser)
       .then(resp => {
         this.setState({docs: resp.data.docs, mongoStore: true});
       });
@@ -59,22 +60,31 @@ class Home extends React.Component {
     });
   }
 
-  logInUser() {
-    axios.post('http://localhost:3000' + '/user/findOrCreate', this.state)
+  loginUser() {
+    axios.post('http://localhost:3000' + '/login', this.state)
     .then(resp => {
       if(resp.data.user) {
         const strUser = JSON.stringify(resp.data.user);
-        console.log('hi', resp.data.user, strUser);
         localStorage.setItem('user', strUser);
         this.setState({user: resp.data.user, docs: resp.data.docs});
       }
     });
   }
 
+  logoutUser() {
+    axios.get('http://localhost:3000' + '/logout')
+    .then(resp => {
+      console.log(resp);
+      localStorage.setItem('user', null);
+      this.setState({user: null});
+    });
+  }
+
   render() {
-    if(this.state.user) {
+    if (this.state.user) {
       return (
         <div className="container loggedin-homepage">
+          <Button onClick={this.logoutUser} waves='light' className='save-doc' style={{alignSelf: 'flex-start', position: 'absolute', marginLeft: '20px'}}>Logout<Icon left>navigate_before</Icon></Button>
           <h3 style={{color: 'white'}} >All your DocTings. In one place. </h3>
           <div>
           <Link to="/newEditor"><Button floating large className='red' waves='light' icon='add'>Create a new document </Button></Link>
@@ -123,7 +133,7 @@ class Home extends React.Component {
           <Input onChange={this.handleInputChange} value={this.state.username} name="username" type="text" label="Username" s={12} />
           <Input onChange={this.handleInputChange} value={this.state.password} name="password" type="password" label="password" s={12} />
         </Row>
-        <Button onClick={this.logInUser} waves='light'>Log in to Docs<Icon left>exit_to_app</Icon></Button>
+        <Button onClick={this.loginUser} waves='light'>Login to Docs<Icon left>exit_to_app</Icon></Button>
         </div>
       </div>
     );
