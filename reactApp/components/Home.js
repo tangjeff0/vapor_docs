@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
 import {Button, Icon, Row, Input, Modal} from 'react-materialize';
+
 class Home extends React.Component {
   constructor(props) {
     super(props);
@@ -42,22 +43,6 @@ class Home extends React.Component {
     });
   }
   
-  checkDocPassword() {
-    axios.post('http://localhost:3000' + '/checkDocPassword', {
-      docId: this.state.docId,
-      docPassword: this.state.docPassword,
-    })
-    .then(resp => {
-      this.setState({progressBar: true});
-      if (resp.data.wasCorrectPassword) { this.setState({lockedDoc: false}); }
-      else {
-        // TODO give visual feedback
-        console.log('wrong password :(!', resp);
-      }
-    })
-    .catch(err => { console.log({err}); });
-  }
-
   loginUser() {
     axios.post('http://localhost:3000' + '/login', this.state)
     .then(resp => {
@@ -77,6 +62,22 @@ class Home extends React.Component {
     });
   }
 
+  checkDocPassword() {
+    axios.post('http://localhost:3000' + '/checkDocPassword', {
+      docId: this.state.docId,
+      docPassword: this.state.docPassword,
+    })
+    .then(resp => {
+      this.setState({progressBar: true});
+      if (resp.data.wasCorrectPassword) { this.setState({lockedDoc: false}); }
+      else {
+        // TODO give visual feedback
+        console.log('wrong password :(!', resp);
+      }
+    })
+    .catch(err => { console.log({err}); });
+  }
+
   render() {
     if (this.state.user) {
       return (
@@ -88,6 +89,13 @@ class Home extends React.Component {
           </div>
           <div className="doc-container">
             {this.state.docs.map(doc => {
+
+              /* return ( */
+              /*   <Link key={doc._id} to={'/doc/' + this.state.docId}> */
+              /*     <p>{doc.title}</p> */
+              /*   </Link> */
+              /* ); */
+
               return (
                 <p key={doc._id}>
                   <a href='#' onClick={() => {
@@ -98,6 +106,7 @@ class Home extends React.Component {
                   </a>
                 </p>
               );
+
             })}
           </div>
 
@@ -111,7 +120,6 @@ class Home extends React.Component {
               <Link to={'/doc/' + this.state.docId}>
                 <Button onClick={() => $('#docPasswordModal').modal('close')} waves='light' className="save-doc">unlocked<Icon left>lock_open</Icon></Button>
               </Link>
-        
           }
         >
           <Input onChange={this.handleInputChange} value={this.state.docPassword} name="docPassword" type="password" label="password" s={12} />
