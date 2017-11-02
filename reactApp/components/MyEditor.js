@@ -75,7 +75,7 @@ class MyEditor extends React.Component {
       /* console.log("even newer contentState", newContentState); */
       console.log("even newer selectionState", newSelectionState);
 
-      this.setState({editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(contents.content)))});
+      this.setState({editorState: EditorState.createWithContent(newContentState)});
 
     });
   }
