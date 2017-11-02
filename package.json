@@ -14,6 +14,11 @@
     "server": "node backend/server.js",
     "test": "mocha --timeout 5000 --exit"
   },
+  "eslintConfig": {
+    "globals": {
+      "$": false
+    }
+  },
   "repository": "",
   "keywords": [],
   "author": "",

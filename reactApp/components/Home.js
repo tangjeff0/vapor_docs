@@ -49,15 +49,13 @@ class Home extends React.Component {
     })
     .then(resp => {
       this.setState({progressBar: true});
-      if (resp.data.wasCorrectPassword) {
-        this.setState({lockedDoc: false});
-      } else {
-        console.log('wrong password :(!', resp);//give visual feedback as well
+      if (resp.data.wasCorrectPassword) { this.setState({lockedDoc: false}); }
+      else {
+        // TODO give visual feedback
+        console.log('wrong password :(!', resp);
       }
     })
-    .catch(err => {
-      console.log('ERROR', err);
-    });
+    .catch(err => { console.log({err}); });
   }
 
   loginUser() {
@@ -74,7 +72,6 @@ class Home extends React.Component {
   logoutUser() {
     axios.get('http://localhost:3000' + '/logout')
     .then(resp => {
-      console.log(resp);
       localStorage.setItem('user', null);
       this.setState({user: null});
     });
@@ -112,8 +109,7 @@ class Home extends React.Component {
               <Button onClick={this.checkDocPassword} waves='light' className="save-doc">locked<Icon left>lock</Icon></Button>
               :
               <Link to={'/doc/' + this.state.docId}>
-                <Button onClick={() => $('#docPasswordModal').modal('close')} waves='light' className="save-doc">unlocked<Icon left>lock_open</Icon>
-                </Button>
+                <Button onClick={() => $('#docPasswordModal').modal('close')} waves='light' className="save-doc">unlocked<Icon left>lock_open</Icon></Button>
               </Link>
         
           }
