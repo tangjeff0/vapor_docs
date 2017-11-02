@@ -78,15 +78,16 @@ ul > li {
   margin-right: 7px;
 }
 .align-right div {
-    text-align: right;
+  text-align: right;
 }
 .align-center div {
-    text-align: center;
+  text-align: center;
 }
 .align-left div {
-    text-align: left;
+  text-align: left;
 }
 .toolbar-wrapper {
+  /* border: 1px black solid; */
   position: fixed;
   margin-bottom: 20px;
 }
@@ -109,10 +110,9 @@ ul > li {
   margin-top: 24px;
 }
 .title-row{
-    margin-top: 20px;
+  margin-top: 20px;
 }
 .title-input {
-
   color: white;
   font-size: 20px !important;
   margin-top: 10px;

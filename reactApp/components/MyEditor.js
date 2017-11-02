@@ -200,7 +200,7 @@ class MyEditor extends React.Component {
       <div className="wrapper" style={{width: '95%'}}>
 
 			<Modal id='collabModal'
-				header='Add collaborators'
+				header='Add Friends'
         actions={<Button onClick={this.addCollab} waves='light' className="save-doc">invite<Icon left>group_add</Icon></Button>}
       >
 				<Input onChange={this.handleInputChange} value={this.state.newCollab} name="newCollab" type="text" label="username" s={12} />
@@ -211,19 +211,19 @@ class MyEditor extends React.Component {
         <Button onClick={() => $('#collabModal').modal('open')} waves='light' className="save-doc">invite<Icon left>group_add</Icon></Button>
       </Row>
       <div className="RichEditor-root">
-          <div className="toolbar-wrapper">
-            <BlockStyleControls
-              editorState={editorState}
-              onToggle={this._toggleBlockStyle}
-            />
-            <InlineStyleControls
-              editorState={editorState}
-              onToggle={this._toggleInlineStyle}
-            />
-          </div>
-          <div className={className} onClick={this.focus}>
-            <Editor blockStyleFn={getBlockStyle} spellCheck={true} customStyleMap={styleMap} ref={this.setDomEditorRef} editorState={this.state.editorState} onChange={this.onChange} />
-          </div>
+        <div className="toolbar-wrapper">
+          <BlockStyleControls
+            editorState={editorState}
+            onToggle={this._toggleBlockStyle}
+          />
+          <InlineStyleControls
+            editorState={editorState}
+            onToggle={this._toggleInlineStyle}
+          />
+        </div>
+        <div className={className} onClick={this.focus}>
+          <Editor blockStyleFn={getBlockStyle} spellCheck={true} customStyleMap={styleMap} ref={this.setDomEditorRef} editorState={this.state.editorState} onChange={this.onChange} />
+        </div>
       </div>
 
 			<Modal id='saveModal'
