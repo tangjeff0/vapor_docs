@@ -8,21 +8,26 @@ const COLOR_STYLES = [
 ];
 
 const DropDownItem = (props) => {
-  if(props.active) {
+  if (props.active) {
     return (
-      <div style={{marginTop:'5px',color: 'grey'}} onMouseDown={(e) => props.handleClick(e, props.style,props.label )} key={props.label} style={{color: props.label}}><span style={{color: props.label}}>{props.label}</span> </div>
+      <div style={{marginTop:'5px', color: 'grey'}}
+        onMouseDown={(e) => props.handleClick(e, props.style, props.label )}
+        key={props.label}
+        style={{color: props.label}}
+      >
+        <span style={{color: props.label}}>{props.label}</span>
+      </div>
     );
   }
   return (
     <div style={{marginTop:'5px', color: 'grey'}} onMouseDown={(e) => props.handleClick(e, props.style, props.label)} key={props.label}><span>{props.label}</span> </div>
   );
 };
+
 class ColorDropDown extends React.Component {
   constructor(props) {
     super(props);
-    this.state ={
-      selectedColor: 'black'
-    };
+    this.state ={selectedColor: 'black'};
     this.handleClick = this.handleClick.bind(this);
   }
 
@@ -35,10 +40,21 @@ class ColorDropDown extends React.Component {
   render() {
     return (
       <Dropdown trigger={
-	<div style={{marginBottom: '20px'}} onMouseDown={(e) => e.preventDefault()} style={{display: 'inline-block'}}><Icon className={this.state.selectedColor.toLowerCase() + '-dropdown'}>font_download</Icon><Icon right className="dropdown-icon">arrow_drop_down</Icon></div>
+        <div style={{marginBottom: '20px'}} onMouseDown={(e) => e.preventDefault()} style={{display: 'inline-block'}}>
+          <Icon className={this.state.selectedColor.toLowerCase() + '-dropdown'}>font_download</Icon>
+          <Icon right className="dropdown-icon">arrow_drop_down</Icon>
+        </div>
 	}>
       {COLOR_STYLES.map(style => {
-        return <DropDownItem key={style.label} active={this.state.selectedColor === style.label} handleClick={this.handleClick} label={style.label} style={style.style} />;
+        return (
+          <DropDownItem
+            key={style.label}
+            active={this.state.selectedColor === style.label}
+            handleClick={this.handleClick}
+            label={style.label}
+            style={style.style}
+          />
+        );
       })}
       </Dropdown>
     );

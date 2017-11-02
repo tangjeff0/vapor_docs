@@ -2,16 +2,15 @@ import React from 'react';
 import StyleButton from './StyleButton';
 import ColorDropDown from './ColorDropDown';
 import FontSizeDropDown from './FontSizeDropDown';
-var INLINE_STYLES = [
+
+const INLINE_STYLES = [
   {label: 'Bold', style: 'BOLD'},
   {label: 'Italic', style: 'ITALIC'},
   {label: 'Underline', style: 'UNDERLINE'}
-
 ];
 
-
 const InlineStyleControls = (props) => {
-  var currentStyle = props.editorState.getCurrentInlineStyle();
+  let currentStyle = props.editorState.getCurrentInlineStyle();
   return (
     <span>
     <div className="RichEditor-controls" style={{display: 'inline'}}>
@@ -25,8 +24,7 @@ const InlineStyleControls = (props) => {
             style={type.style}
           />
         );
-      }
-      )}
+      })}
       <div style={{marginTop: '-3px', display: 'inline'}}>
         <ColorDropDown onToggle={props.onToggle}/>
       </div>

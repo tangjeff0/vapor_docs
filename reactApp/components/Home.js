@@ -2,33 +2,36 @@ import React from 'react';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
 import {Button, Icon, Row, Input, Modal} from 'react-materialize';
+
 class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       username: '',
       password: '',
-      docId: '',// for checkDocPassword()
+      docId: '',
       docPassword: '',
-      locked: true,
-      user: false,
+      lockedDoc: true,
+      user: null,
+      mongoStore: null,
       docs: []
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
-    this.logInUser = this.logInUser.bind(this);
+    this.loginUser = this.loginUser.bind(this);
+    this.logoutUser = this.logoutUser.bind(this);
     this.checkDocPassword = this.checkDocPassword.bind(this);
   }
 
   componentDidMount() {
-    if(localStorage.getItem('user')) {
-      this.setState({user: localStorage.getItem('user')});
+    const objUser = JSON.parse(localStorage.getItem('user'));
+    this.setState({user: objUser || null});
+    if (!this.state.mongoStore && objUser) {
+      axios.post('http://localhost:3000/login', objUser)
+      .then(resp => {
+        this.setState({docs: resp.data.docs, mongoStore: true});
+      });
     }
-    const self = this;
-    axios.get('http://localhost:3000/docs')
-    .then(function(response) {
-      self.setState({docs: response.data.docs});
-    });
   }
 
   handleInputChange(event) {
@@ -40,6 +43,25 @@ class Home extends React.Component {
     });
   }
   
+  loginUser() {
+    axios.post('http://localhost:3000' + '/login', this.state)
+    .then(resp => {
+      if(resp.data.user) {
+        const strUser = JSON.stringify(resp.data.user);
+        localStorage.setItem('user', strUser);
+        this.setState({user: resp.data.user, docs: resp.data.docs});
+      }
+    });
+  }
+
+  logoutUser() {
+    axios.get('http://localhost:3000' + '/logout')
+    .then(resp => {
+      localStorage.setItem('user', null);
+      this.setState({user: null});
+    });
+  }
+
   checkDocPassword() {
     axios.post('http://localhost:3000' + '/checkDocPassword', {
       docId: this.state.docId,
@@ -47,38 +69,33 @@ class Home extends React.Component {
     })
     .then(resp => {
       this.setState({progressBar: true});
-      if (resp.data.wasCorrectPassword) {
-        this.setState({locked: false});
-      } else {
-        console.log('wrong password :(!', resp);//give visual feedback as well
+      if (resp.data.wasCorrectPassword) { this.setState({lockedDoc: false}); }
+      else {
+        // TODO give visual feedback
+        console.log('wrong password :(!', resp);
       }
     })
-    .catch(err => {
-      console.log('ERROR', err);
-    });
-  }
-
-  logInUser() {
-    const self = this;
-    axios.post('http://localhost:3000' + '/user/findOrCreate', this.state)
-    .then(function(response) {
-      if(response.data.user) {
-        localStorage.setItem('user', response.data.user);
-        self.setState({user: response.data.user, docs: response.data.docs});
-      }
-    });
+    .catch(err => { console.log({err}); });
   }
 
   render() {
-    if(this.state.user) {
+    if (this.state.user) {
       return (
         <div className="container loggedin-homepage">
+          <Button onClick={this.logoutUser} waves='light' className='save-doc' style={{alignSelf: 'flex-start', position: 'absolute', marginLeft: '20px'}}>Logout<Icon left>navigate_before</Icon></Button>
           <h3 style={{color: 'white'}} >All your DocTings. In one place. </h3>
           <div>
           <Link to="/newEditor"><Button floating large className='red' waves='light' icon='add'>Create a new document </Button></Link>
           </div>
           <div className="doc-container">
             {this.state.docs.map(doc => {
+
+              /* return ( */
+              /*   <Link key={doc._id} to={'/doc/' + this.state.docId}> */
+              /*     <p>{doc.title}</p> */
+              /*   </Link> */
+              /* ); */
+
               return (
                 <p key={doc._id}>
                   <a href='#' onClick={() => {
@@ -89,6 +106,7 @@ class Home extends React.Component {
                   </a>
                 </p>
               );
+
             })}
           </div>
 
@@ -96,18 +114,15 @@ class Home extends React.Component {
           id='docPasswordModal'
           header='Doc Password'
           actions={
-            this.state.locked ?
+            this.state.lockedDoc ?
               <Button onClick={this.checkDocPassword} waves='light' className="save-doc">locked<Icon left>lock</Icon></Button>
               :
               <Link to={'/doc/' + this.state.docId}>
-                <Button onClick={() => $('#docPasswordModal').modal('close')} waves='light' className="save-doc">unlocked<Icon left>lock_open</Icon>
-                </Button>
+                <Button onClick={() => $('#docPasswordModal').modal('close')} waves='light' className="save-doc">unlocked<Icon left>lock_open</Icon></Button>
               </Link>
-        
           }
         >
           <Input onChange={this.handleInputChange} value={this.state.docPassword} name="docPassword" type="password" label="password" s={12} />
-						
         </Modal>
 
         </div>
@@ -122,7 +137,7 @@ class Home extends React.Component {
           <Input onChange={this.handleInputChange} value={this.state.username} name="username" type="text" label="Username" s={12} />
           <Input onChange={this.handleInputChange} value={this.state.password} name="password" type="password" label="password" s={12} />
         </Row>
-        <Button onClick={this.logInUser} waves='light'>Log in to Docs<Icon left>exit_to_app</Icon></Button>
+        <Button onClick={this.loginUser} waves='light'>Login to Docs<Icon left>exit_to_app</Icon></Button>
         </div>
       </div>
     );

@@ -1,8 +1,8 @@
 import React from 'react';
-import {Editor, EditorState, RichUtils, convertFromRaw, convertToRaw} from 'draft-js';
+import {Editor, EditorState, RichUtils, convertFromRaw, convertToRaw, Modifier, SelectionState} from 'draft-js';
 import {Button, Icon, Row, Input, Modal} from 'react-materialize';
 import axios from 'axios';
-
+import {set} from 'immutable';
 import InlineStyleControls from './InlineStyleControls';
 import BlockStyleControls from './BlockStyleControls';
 
@@ -39,7 +39,14 @@ class MyEditor extends React.Component {
     };
     this.onChange = (editorState) => {
       this.setState({editorState});
-      this.props.socket.emit('change doc', {content: JSON.stringify(convertToRaw(editorState.getCurrentContent())), room : this.state.docId});
+      var selectionState = editorState.getSelection();
+      var focusKey = selectionState.getFocusKey();
+      this.props.socket.emit('change doc', {
+        content: JSON.stringify(convertToRaw(editorState.getCurrentContent())),
+        room: this.state.docId,
+        selectionState,
+        focusKey,
+      });
     };
     this.focus = () => this.domEditor.focus();
     this._toggleInlineStyle = this._toggleInlineStyle.bind(this);
@@ -50,8 +57,26 @@ class MyEditor extends React.Component {
     this.saveModal = this.saveModal.bind(this);
     this.addCollab = this.addCollab.bind(this);
     this.props.socket.on('change doc', contents => {
-      console.log("CONTENETS", contents);
-      this.setState({editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(contents)))});
+      /* console.log("CONTENTS", contents); */
+      let newContentState = EditorState.createWithContent(convertFromRaw(JSON.parse(contents.content))).getCurrentContent();
+      let newSelectionState = SelectionState.createEmpty(contents.focusKey);
+
+      // set properties for cursor insertion
+      newSelectionState = newSelectionState.set('focusOffset', contents.selectionState.focusOffset);
+      newSelectionState = newSelectionState.set('anchorOffset', contents.selectionState.focusOffset);
+
+      // set properties for selection highlighting
+      /* console.log("new contentState", newContentState); */
+      console.log("new selectionState", newSelectionState);
+
+      newContentState = Modifier.insertText(newContentState, newSelectionState, '|', {fontSize: '20px', color: 'blue'});
+      newContentState = Modifier.applyInlineStyle(newContentState, newSelectionState, 'BLUE');
+
+      /* console.log("even newer contentState", newContentState); */
+      console.log("even newer selectionState", newSelectionState);
+
+      this.setState({editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(contents.content)))});
+
     });
   }
 
@@ -148,57 +173,84 @@ class MyEditor extends React.Component {
     })
     .then(resp => {
       console.log('addCollab request sent', resp.data);
-      if (resp.data.addedCollab) {
-        $('#collabModal').modal('close');
-      }
+      if (resp.data.addedCollab) { $('#collabModal').modal('close'); }
     })
-    .catch(resp => {
-      console.log(resp);
-    });
+    .catch(resp => { console.log(resp); });
   }
 
 
   render() {
     let className = 'RichEditor-editor';
     const {editorState} = this.state;
+    var selectionState  = editorState.getSelection();
+    var currentContent  = editorState.getCurrentContent();
+    var anchorKey       = selectionState.getAnchorKey();
+    var start           = selectionState.getStartOffset();
+    var end             = selectionState.getEndOffset();
+    var curContentBlock = currentContent.getBlockForKey(anchorKey);
+    var selectedText    = curContentBlock.getText().slice(start, end);
+    const draftjsObj = {
+      selectionState,
+      currentContent,
+      curContentBlock,
+      selectedText,
+      start,
+      end,
+      anchorKey
+    };
+    /* console.log('draftjsObj', draftjsObj); */
 
     return (
-
       <div className="wrapper" style={{width: '95%'}}>
 
-			<Modal id='collabModal'
-				header='Add collaborators'
+			<Modal
+        id='collabModal'
+				header='Add Friends'
         actions={<Button onClick={this.addCollab} waves='light' className="save-doc">invite<Icon left>group_add</Icon></Button>}
       >
 				<Input onChange={this.handleInputChange} value={this.state.newCollab} name="newCollab" type="text" label="username" s={12} />
+			</Modal>
+			<Modal
+        id='saveModal'
+				header='New DocTing - please enter password'
+        actions={<Button onClick={this.saveModal} waves='light' className="save-doc">Save<Icon left>save</Icon></Button>}
+      >
+				<Input onChange={this.handleInputChange} value={this.state.password} name="password" type="password" label="password" s={12} />
 			</Modal>
 
       <Row className="title-row">
         <Input className="title-input" s={6} name="title" label={this.state.title ? null : "Title"} value={this.state.title} onChange={this.handleInputChange}/>
         <Button onClick={() => $('#collabModal').modal('open')} waves='light' className="save-doc">invite<Icon left>group_add</Icon></Button>
       </Row>
-      <div className="RichEditor-root">
-          <div className="toolbar-wrapper">
-            <BlockStyleControls
-              editorState={editorState}
-              onToggle={this._toggleBlockStyle}
-            />
-            <InlineStyleControls
-              editorState={editorState}
-              onToggle={this._toggleInlineStyle}
-            />
-          </div>
-          <div className={className} onClick={this.focus}>
-            <Editor blockStyleFn={getBlockStyle} spellCheck={true} customStyleMap={styleMap} ref={this.setDomEditorRef} editorState={this.state.editorState} onChange={this.onChange} />
-          </div>
-      </div>
 
-			<Modal id='saveModal'
-				header='New DocTing - please enter password'
-        actions={<Button onClick={this.saveModal} waves='light' className="save-doc">Save<Icon left>save</Icon></Button>}
-      >
-				<Input onChange={this.handleInputChange} value={this.state.password} name="password" type="password" label="password" s={12} />
-			</Modal>
+      <div className="RichEditor-root">
+
+        <div className="toolbar-wrapper">
+          <BlockStyleControls
+            editorState={editorState}
+            onToggle={this._toggleBlockStyle}
+          />
+          <InlineStyleControls
+            editorState={editorState}
+            onToggle={this._toggleInlineStyle}
+          />
+        </div>
+
+        <div
+          className={className}
+          onClick={this.focus}
+        >
+          <Editor
+            blockStyleFn={getBlockStyle}
+            spellCheck={true}
+            customStyleMap={styleMap}
+            ref={this.setDomEditorRef}
+            editorState={this.state.editorState}
+            onChange={this.onChange}
+          />
+        </div>
+
+      </div>
 
       <Button onClick={this.saveDoc} waves='light' className="save-doc">Save<Icon left>save</Icon></Button>
 
