@@ -4,7 +4,6 @@ import {Button, Icon, Row, Input, Modal} from 'react-materialize';
 import axios from 'axios';
 import InlineStyleControls from './InlineStyleControls';
 import BlockStyleControls from './BlockStyleControls';
-import findAndReplaceDOMText from 'findandreplacedomtext';
 import _ from 'underscore';
 const styleMap = {
   RED :{
@@ -37,10 +36,6 @@ function searchNodes(node, searchTerm, nodeArray) {
     }
   } else {
     if(node.textContent.indexOf(searchTerm) > -1){
-
-      const stringsplit = node.textContent.split(searchTerm);
-      // let newHTML = '<span>' + stringsplit[0] + "<span style='background-color: yellow'>" + searchTerm + "</span>" + stringsplit[1] + '</span>';
-      // node.innerHTML = newHTML;
       //find character width;
       const characterWidth = Math.abs(node.parentNode.getBoundingClientRect().left - node.parentNode.getBoundingClientRect().right )/node.textContent.length;
       console.log("characterWidth", characterWidth);
@@ -111,8 +106,8 @@ class MyEditor extends React.Component {
       this.setState({collabObj: newUserObj});
       // console.log("contents.userObj", contents.userObj);
       // this.setState({top: contents.data.loc.top, left: contents.data.loc.left});
-
-      this.setState({editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(contents.content)))});
+      let newEditorState = EditorState.createWithContent(convertFromRaw(JSON.parse(contents.content)));
+      this.setState({editorState: EditorState.forceSelection(newEditorState, this.state.editorState.getSelection())});
 
     });
   }
@@ -152,11 +147,9 @@ class MyEditor extends React.Component {
     if(name==="searchTerm") {
       //Get element node Text
       const editor = document.getElementsByClassName('public-DraftEditor-content')[0];
-      console.log("editor", editor);
       const node = editor;
       const nodeArray = [];
       searchNodes(node, value, nodeArray);
-      console.log("node arr", nodeArray);
       this.setState({searchArray: nodeArray});
     }
   }
@@ -292,10 +285,8 @@ class MyEditor extends React.Component {
 
           })}
           {this.state.searchArray.map(searchObj => {
-            console.log("leftIndex before",searchObj.position.left, searchObj.index);
             const leftIndex = searchObj.position.left + (searchObj.index*searchObj.characterWidth);
             const width = searchObj.searchTerm *searchObj.characterWidth;
-            console.log("leftIndex", leftIndex);
             return (
               <div key={searchObj.top} style={{position: 'absolute', backgroundColor: 'yellow', opacity: 0.2, width: width + 'px', height: '15px', top: searchObj.position.top, left: leftIndex + 'px'}}></div>
             );
