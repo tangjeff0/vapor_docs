@@ -69,7 +69,7 @@ io.on('connect', onConnect);
 function onConnect(socket) {
 
   const rooms = io.sockets.adapter.rooms;
-
+  const colors = ['red', 'dodgerblue', 'green', 'magenta', 'cyan', 'purple'];
   socket.on('connection', (room) => {
     socket.join(room);
     /* console.log("new user joined", rooms[room]); */
@@ -88,9 +88,15 @@ function onConnect(socket) {
   });
 
   socket.on('change doc', (contents) => {
-    if (io.sockets.adapter.rooms[contents.room]) {
-      /* console.log("ROOM", io.sockets.adapter.rooms[contents.room]); */
-      /* console.log("\ncontents\n", contents); */
+    if(io.sockets.adapter.rooms[contents.room]) {
+      var socketIdArray = Object.keys(rooms);
+      const selectedColor = colors[socketIdArray.indexOf(contents.socketId)];
+      contents.userObj = {};
+
+      if(contents.data) {
+        contents.userObj[contents.socketId] = {color: selectedColor, top: contents.data.loc.top, left: contents.data.loc.left};
+      }
+
       socket.to(contents.room).emit('change doc', contents);
       rooms[contents.room].currentContentState = contents.content;
     }

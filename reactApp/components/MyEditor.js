@@ -2,10 +2,9 @@ import React from 'react';
 import {Editor, EditorState, RichUtils, convertFromRaw, convertToRaw, Modifier, SelectionState} from 'draft-js';
 import {Button, Icon, Row, Input, Modal} from 'react-materialize';
 import axios from 'axios';
-import {set} from 'immutable';
 import InlineStyleControls from './InlineStyleControls';
 import BlockStyleControls from './BlockStyleControls';
-
+import _ from 'underscore';
 const styleMap = {
   RED :{
     color: 'red'
@@ -27,22 +26,7 @@ const styleMap = {
   },
   LARGE: {
     fontSize: '20px'
-  },
-  RED1 :{
-    backgroundColor: 'red'
-  },
-  BLUE2 :{
-    backgroundColor: 'dodgerblue'
-  },
-  GREEN3 :{
-    backgroundColor: 'green'
-  },
-  CYAN4 :{
-    backgroundColor: 'cyan'
-  },
-  MAGENTA5 :{
-    backgroundColor: 'magenta'
-  },
+  }
 };
 
 class MyEditor extends React.Component {
@@ -54,19 +38,38 @@ class MyEditor extends React.Component {
       password: '',
       title: '',
       newCollab: '',
-      collabs: [],
-      assign: {},
+      collabObj: {}
     };
+    console.log("socket", this.props.socket);
     this.onChange = (editorState) => {
       this.setState({editorState});
-      var selectionState = editorState.getSelection();
-      var focusKey = selectionState.getFocusKey();
+      var selection = window.getSelection();
+      let data;
+      //only emit a cursor event if it took place in the editor (dont emit an event where user has clicked somewhere out of the screen)
+      const windowSelection = window.getSelection();
+      if(windowSelection.rangeCount>0){
+        // console.log('window selection rangecount >0');
+        const range = windowSelection.getRangeAt(0);
+        const clientRects = range.getClientRects();
+        if(clientRects.length > 0) {
+          // console.log('client rects >0');
+          const rects = clientRects[0];//cursor wil always be a single range so u can just ge tthe first range in the array
+          const loc = {top: rects.top, left: rects.left};
+          data = {incomingSelectionObj: selection, loc};
+
+          // console.log('about to emit cursor movement ');
+          //
+          // this.setState({editorState: originalEditorState, top, left, height: bottom - top})
+        }
+        // this.socket.emit('cursorMove', selection)
+      }
+
+
       this.props.socket.emit('change doc', {
         content: JSON.stringify(convertToRaw(editorState.getCurrentContent())),
         room: this.state.docId,
-        user: JSON.parse(localStorage.getItem('user')).username,
-        selectionState,
-        focusKey,
+        socketId: this.props.socket.id,
+        data
       });
     };
     this.focus = () => this.domEditor.focus();
@@ -77,43 +80,19 @@ class MyEditor extends React.Component {
     this.saveDoc = this.saveDoc.bind(this);
     this.saveModal = this.saveModal.bind(this);
     this.addCollab = this.addCollab.bind(this);
-    this.props.socket.on('change doc', (contents) => {
-      const colors = ['RED1', 'BLUE2', 'GREEN3', 'CYAN4', 'MAGENTA5'];
-      console.log(this.state.collabs, this.state.assign, contents.user);
-      /* if (this.state.collaboraters.length = 0) { */
-      /*   this.setState({ */
-      /*     collaborators: JSON.parse(localStorage.getItem('user')).username, */
-      /*   }); */
-      /*   const obj[JSON.parse(localStorage.getItem('user')).username] = 'BLACK1'; */
-      /* } */
-      /* if (this.state.collaborators.indexOf(contents.user) === -1) { */
-        /* this.setState({collaborators: [...this.state.collaborators, contents.user]}); */
-        /* this.setState({colorAssignment: this.state.colorAssignment[contents.user] = colors[this.state.collaborators.length]}; */
-      /* } */
-      /* console.log(this.state.colorAssignment, this.state.collaborators, colors[this.state.collaborators.length]); */
-      let newContentState = EditorState.createWithContent(convertFromRaw(JSON.parse(contents.content))).getCurrentContent();
-      let newSelectionState = SelectionState.createEmpty(contents.focusKey);
-      const focusOffset = contents.selectionState.focusOffset;
-      const anchorOffset = contents.selectionState.anchorOffset;
+    this.props.socket.on('change doc', contents => {
+      /* console.log("CONTENTS", contents); */
+      // console.log("contents", contents);
+      console.log('contents', contents);
 
-      /* // set properties for cursor insertion */
-      /* newSelectionState = newSelectionState.set('anchorOffset', focusOffset); */
-      /* newSelectionState = newSelectionState.set('focusOffset', focusOffset); */
-      /* // insert 'cursor' when moving */
-      /* const zws = "​"; */
-      /* newContentState = Modifier.insertText(newContentState, newSelectionState, zws, {style: 'BLACK'}); */
-      /* newContentState = Modifier.insertText(newContentState, newSelectionState, '|', {style: this.state.assign[contents.user]}); */
-      /* newContentState = Modifier.insertText(newContentState, newSelectionState, zws, {style: 'BLACK'}); */
+      const newUserObj = Object.assign({}, this.state.collabObj);
+      newUserObj[contents.socketId] = contents.userObj[contents.socketId];
+      this.setState({collabObj: newUserObj});
+      // console.log("contents.userObj", contents.userObj);
+      // this.setState({top: contents.data.loc.top, left: contents.data.loc.left});
 
-      // set properties for selection highlighting
-      if (anchorOffset < focusOffset) {// highlight forward... setting anchor if less than focus is not allowed by draftjs
-        newSelectionState = newSelectionState.set('anchorOffset', anchorOffset);
-        newSelectionState = newSelectionState.set('focusOffset', focusOffset);
-        newContentState = Modifier.applyInlineStyle(newContentState, newSelectionState, 'RED1');
-      }
-      /* console.log("new contentState", newContentState); */
-      /* console.log("new selectionState", newSelectionState); */
-      this.setState({editorState: EditorState.createWithContent(newContentState)});
+      this.setState({editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(contents.content)))});
+
     });
   }
 
@@ -219,24 +198,9 @@ class MyEditor extends React.Component {
   render() {
     let className = 'RichEditor-editor';
     const {editorState} = this.state;
-    var selectionState  = editorState.getSelection();
-    var currentContent  = editorState.getCurrentContent();
-    var anchorKey       = selectionState.getAnchorKey();
-    var start           = selectionState.getStartOffset();
-    var end             = selectionState.getEndOffset();
-    var curContentBlock = currentContent.getBlockForKey(anchorKey);
-    var selectedText    = curContentBlock.getText().slice(start, end);
-    const draftjsObj = {
-      selectionState,
-      currentContent,
-      curContentBlock,
-      selectedText,
-      start,
-      end,
-      anchorKey
-    };
-    /* console.log('draftjsObj', draftjsObj); */
 
+    /* console.log('draftjsObj', draftjsObj); */
+    console.log("this collabObj", this.state.collabObj);
     return (
       <div className="wrapper" style={{width: '95%'}}>
 
@@ -277,6 +241,22 @@ class MyEditor extends React.Component {
           className={className}
           onClick={this.focus}
         >
+          {_.map(this.state.collabObj, (val, key) => {
+
+            if(val) {
+              if(val.hasOwnProperty('top')) {
+                return (
+                  <div key={val.color} style={{position: 'absolute', backgroundColor: val.color, width: '2px', height: '15px', top: val.top, left: val.left}}></div>
+                );
+              } else{
+                return <div key={key}></div>;
+              }
+            }
+            return <div key={key}></div>;
+
+
+          })}
+
           <Editor
             blockStyleFn={getBlockStyle}
             spellCheck={true}
