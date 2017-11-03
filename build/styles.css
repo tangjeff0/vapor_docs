@@ -34,6 +34,12 @@ input.title-input {
   background-size: cover;
 }
 
+.side-nav {
+  background-image: url("https://78.media.tumblr.com/38442709125cb397cbaa923621fce722/tumblr_oy5glpe1KN1wzlvpdo1_500.gif");
+	background-repeat: no-repeat;
+  background-size: cover;
+}
+
 .home-page {
   display: flex;
   justify-content: center;

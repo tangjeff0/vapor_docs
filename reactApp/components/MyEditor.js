@@ -1,6 +1,6 @@
 import React from 'react';
 import {Editor, EditorState, RichUtils, convertFromRaw, convertToRaw} from 'draft-js';
-import {Button, Icon, Row, Input, Modal} from 'react-materialize';
+import {Button, Icon, Row, Input, Modal, SideNav, SideNavItem} from 'react-materialize';
 import axios from 'axios';
 import InlineStyleControls from './InlineStyleControls';
 import BlockStyleControls from './BlockStyleControls';
@@ -132,7 +132,7 @@ class MyEditor extends React.Component {
     if(name==="searchTerm") {
       //Get element node Text
       const editor = document.getElementsByClassName('RichEditor-editor')[0];
-      console.log("editor", editor);
+      /* console.log("editor", editor); */
       console.log(findAndReplaceDOMText(editor, {
         find: this.state.searchTerm
       }));
@@ -250,7 +250,7 @@ class MyEditor extends React.Component {
           onClick={this.focus}
         >
           {_.map(this.state.collabObj, (val, key) => {
-            console.log("val", val);
+            /* console.log("val", val); */
             if(val) {
               if(val.hasOwnProperty('top')) {
                 if(val.left !== val.right) {
@@ -282,6 +282,7 @@ class MyEditor extends React.Component {
 
       </div>
 
+      <VapeOutline currentContent={this.state.editorState.getCurrentContent()} />
       <Button onClick={this.saveDoc} waves='light' className="save-doc">s a v e<Icon left>save</Icon></Button>
 
       </div>
@@ -289,6 +290,39 @@ class MyEditor extends React.Component {
   }
 }
 
+const VapeOutline = (props) => {
+  const content = props.currentContent;
+  const blocks = content.getBlockMap()._list._tail.array;
+  let headers = [];
+
+  blocks.forEach(block => {
+    const vNode = block[1].getInlineStyleAt(0)._map._list._tail;
+    if (vNode) {
+      let ctr = 0;
+      vNode.array.forEach(style => {
+        if (style) {
+          if (style[0] === 'LARGE' || style[0] === 'BOLD') {
+            ctr++;
+            if (ctr === 2) { headers = [...headers, block[1].getText()]; }
+          }
+        }
+      });
+    }
+  });
+
+  return (
+    <SideNav
+    trigger={<Button className='blue darken-2'><Icon left>sort</Icon>Outline</Button>}
+      options={{ closeOnClick: true }}
+    >
+      <h4 style={{fontStyle: 'italic'}}>O U T L I N E</h4>
+      {headers.map((header, idx) => {
+        return <SideNavItem key={header + idx}>{idx + 1}. {header}</SideNavItem>
+      })}
+    </SideNav>
+  );
+
+};
 
 const getBlockStyle = (block) => {
 
