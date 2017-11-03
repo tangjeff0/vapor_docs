@@ -1,5 +1,5 @@
 import React from 'react';
-import {Editor, EditorState, RichUtils, convertFromRaw, convertToRaw, Modifier, SelectionState} from 'draft-js';
+import {Editor, EditorState, RichUtils, convertFromRaw, convertToRaw} from 'draft-js';
 import {Button, Icon, Row, Input, Modal} from 'react-materialize';
 import axios from 'axios';
 import InlineStyleControls from './InlineStyleControls';
