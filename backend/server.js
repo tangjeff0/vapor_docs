@@ -94,7 +94,7 @@ function onConnect(socket) {
       contents.userObj = {};
 
       if(contents.data) {
-        contents.userObj[contents.socketId] = {color: selectedColor, top: contents.data.loc.top, left: contents.data.loc.left};
+        contents.userObj[contents.socketId] = {color: selectedColor, top: contents.data.loc.top, left: contents.data.loc.left, right: contents.data.loc.right};
       }
 
       socket.to(contents.room).emit('change doc', contents);

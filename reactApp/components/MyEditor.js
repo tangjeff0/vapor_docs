@@ -43,19 +43,20 @@ class MyEditor extends React.Component {
     console.log("socket", this.props.socket);
     this.onChange = (editorState) => {
       this.setState({editorState});
-      var selection = window.getSelection();
       let data;
       //only emit a cursor event if it took place in the editor (dont emit an event where user has clicked somewhere out of the screen)
       const windowSelection = window.getSelection();
+      console.log("windowSelection", windowSelection);
       if(windowSelection.rangeCount>0){
         // console.log('window selection rangecount >0');
         const range = windowSelection.getRangeAt(0);
         const clientRects = range.getClientRects();
+        console.log("clientRects", clientRects);
         if(clientRects.length > 0) {
           // console.log('client rects >0');
           const rects = clientRects[0];//cursor wil always be a single range so u can just ge tthe first range in the array
-          const loc = {top: rects.top, left: rects.left};
-          data = {incomingSelectionObj: selection, loc};
+          const loc = {top: rects.top, left: rects.left, right: rects.right};
+          data = {loc};
 
           // console.log('about to emit cursor movement ');
           //
@@ -83,7 +84,7 @@ class MyEditor extends React.Component {
     this.props.socket.on('change doc', contents => {
       /* console.log("CONTENTS", contents); */
       // console.log("contents", contents);
-      console.log('contents', contents);
+
 
       const newUserObj = Object.assign({}, this.state.collabObj);
       newUserObj[contents.socketId] = contents.userObj[contents.socketId];
@@ -200,7 +201,6 @@ class MyEditor extends React.Component {
     const {editorState} = this.state;
 
     /* console.log('draftjsObj', draftjsObj); */
-    console.log("this collabObj", this.state.collabObj);
     return (
       <div className="wrapper" style={{width: '95%'}}>
 
@@ -242,9 +242,14 @@ class MyEditor extends React.Component {
           onClick={this.focus}
         >
           {_.map(this.state.collabObj, (val, key) => {
-
+            console.log("val", val);
             if(val) {
               if(val.hasOwnProperty('top')) {
+                if(val.left !== val.right) {
+                  return(
+                    <div key={val.color} style={{position: 'absolute', opacity: 0.2, zIndex: 0, backgroundColor: val.color, width: Math.abs(val.left - val.right) + 'px', height: '15px', top: val.top, left: val.left}}></div>
+                  );
+                }
                 return (
                   <div key={val.color} style={{position: 'absolute', backgroundColor: val.color, width: '2px', height: '15px', top: val.top, left: val.left}}></div>
                 );
