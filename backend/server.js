@@ -68,16 +68,18 @@ io.on('connect', onConnect);
 
 function onConnect(socket) {
 
-  const colorAssignment = ['blue', 'red', 'yellow', 'green', 'purple', 'cyan'];
-
   const rooms = io.sockets.adapter.rooms;
+
   socket.on('connection', (room) => {
     socket.join(room);
-    console.log("new user joined", rooms[room]);
-    if(rooms[room]['currentContentState']) {
-      socket.emit('state update', rooms[room]['currentContentState']);
+    /* console.log("new user joined", rooms[room]); */
+    if (rooms[room].currentContentState) {
+      socket.emit('state update', rooms[room].currentContentState);
     }
-    socket.emit('color assign', colorAssignment[rooms[room]['length']]);
+    /* console.log('color assign', colorAssignment[rooms[room].length]); */
+    /* console.log(rooms[room]); */
+    /* socket.to(room).emit('color assign', colorAssignment[rooms[room].length]); */
+    /* socket.emit('color assign', colorAssignment[rooms[room]['length']]); */
   });
 
   socket.on('disconnect', () => {
@@ -86,12 +88,12 @@ function onConnect(socket) {
   });
 
   socket.on('change doc', (contents) => {
-    if(io.sockets.adapter.rooms[contents.room]) {
-      console.log("ROOM", io.sockets.adapter.rooms[contents.room]);
+    if (io.sockets.adapter.rooms[contents.room]) {
+      /* console.log("ROOM", io.sockets.adapter.rooms[contents.room]); */
+      /* console.log("\ncontents\n", contents); */
       socket.to(contents.room).emit('change doc', contents);
-      rooms[contents.room]['currentContentState'] = contents.content;
+      rooms[contents.room].currentContentState = contents.content;
     }
-
   });
 
 }

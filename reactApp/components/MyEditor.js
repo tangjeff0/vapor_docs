@@ -13,6 +13,9 @@ const styleMap = {
   BLUE: {
     color: 'blue'
   },
+  BLACK: {
+    color: 'black'
+  },
   GREEN: {
     color: 'green'
   },
@@ -25,6 +28,21 @@ const styleMap = {
   LARGE: {
     fontSize: '20px'
   },
+  RED1 :{
+    backgroundColor: 'red'
+  },
+  BLUE2 :{
+    backgroundColor: 'dodgerblue'
+  },
+  GREEN3 :{
+    backgroundColor: 'green'
+  },
+  CYAN4 :{
+    backgroundColor: 'cyan'
+  },
+  MAGENTA5 :{
+    backgroundColor: 'magenta'
+  },
 };
 
 class MyEditor extends React.Component {
@@ -36,6 +54,8 @@ class MyEditor extends React.Component {
       password: '',
       title: '',
       newCollab: '',
+      collabs: [],
+      assign: {},
     };
     this.onChange = (editorState) => {
       this.setState({editorState});
@@ -44,6 +64,7 @@ class MyEditor extends React.Component {
       this.props.socket.emit('change doc', {
         content: JSON.stringify(convertToRaw(editorState.getCurrentContent())),
         room: this.state.docId,
+        user: JSON.parse(localStorage.getItem('user')).username,
         selectionState,
         focusKey,
       });
@@ -56,27 +77,43 @@ class MyEditor extends React.Component {
     this.saveDoc = this.saveDoc.bind(this);
     this.saveModal = this.saveModal.bind(this);
     this.addCollab = this.addCollab.bind(this);
-    this.props.socket.on('change doc', contents => {
-      /* console.log("CONTENTS", contents); */
+    this.props.socket.on('change doc', (contents) => {
+      const colors = ['RED1', 'BLUE2', 'GREEN3', 'CYAN4', 'MAGENTA5'];
+      console.log(this.state.collabs, this.state.assign, contents.user);
+      /* if (this.state.collaboraters.length = 0) { */
+      /*   this.setState({ */
+      /*     collaborators: JSON.parse(localStorage.getItem('user')).username, */
+      /*   }); */
+      /*   const obj[JSON.parse(localStorage.getItem('user')).username] = 'BLACK1'; */
+      /* } */
+      /* if (this.state.collaborators.indexOf(contents.user) === -1) { */
+        /* this.setState({collaborators: [...this.state.collaborators, contents.user]}); */
+        /* this.setState({colorAssignment: this.state.colorAssignment[contents.user] = colors[this.state.collaborators.length]}; */
+      /* } */
+      /* console.log(this.state.colorAssignment, this.state.collaborators, colors[this.state.collaborators.length]); */
       let newContentState = EditorState.createWithContent(convertFromRaw(JSON.parse(contents.content))).getCurrentContent();
       let newSelectionState = SelectionState.createEmpty(contents.focusKey);
+      const focusOffset = contents.selectionState.focusOffset;
+      const anchorOffset = contents.selectionState.anchorOffset;
 
-      // set properties for cursor insertion
-      newSelectionState = newSelectionState.set('focusOffset', contents.selectionState.focusOffset);
-      newSelectionState = newSelectionState.set('anchorOffset', contents.selectionState.focusOffset);
+      /* // set properties for cursor insertion */
+      /* newSelectionState = newSelectionState.set('anchorOffset', focusOffset); */
+      /* newSelectionState = newSelectionState.set('focusOffset', focusOffset); */
+      /* // insert 'cursor' when moving */
+      /* const zws = "​"; */
+      /* newContentState = Modifier.insertText(newContentState, newSelectionState, zws, {style: 'BLACK'}); */
+      /* newContentState = Modifier.insertText(newContentState, newSelectionState, '|', {style: this.state.assign[contents.user]}); */
+      /* newContentState = Modifier.insertText(newContentState, newSelectionState, zws, {style: 'BLACK'}); */
 
       // set properties for selection highlighting
+      if (anchorOffset < focusOffset) {// highlight forward... setting anchor if less than focus is not allowed by draftjs
+        newSelectionState = newSelectionState.set('anchorOffset', anchorOffset);
+        newSelectionState = newSelectionState.set('focusOffset', focusOffset);
+        newContentState = Modifier.applyInlineStyle(newContentState, newSelectionState, 'RED1');
+      }
       /* console.log("new contentState", newContentState); */
-      console.log("new selectionState", newSelectionState);
-
-      newContentState = Modifier.insertText(newContentState, newSelectionState, '|', {fontSize: '20px', color: 'blue'});
-      newContentState = Modifier.applyInlineStyle(newContentState, newSelectionState, 'BLUE');
-
-      /* console.log("even newer contentState", newContentState); */
-      console.log("even newer selectionState", newSelectionState);
-
+      /* console.log("new selectionState", newSelectionState); */
       this.setState({editorState: EditorState.createWithContent(newContentState)});
-
     });
   }
 
