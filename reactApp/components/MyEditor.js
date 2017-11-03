@@ -36,16 +36,40 @@ class MyEditor extends React.Component {
       password: '',
       title: '',
       newCollab: '',
+      cursorTracker: {},
+      top: null,
+      left: null
     };
+    console.log("socket", this.props.socket);
     this.onChange = (editorState) => {
       this.setState({editorState});
-      var selectionState = editorState.getSelection();
-      var focusKey = selectionState.getFocusKey();
+      var selection = window.getSelection();
+      let data;
+      //only emit a cursor event if it took place in the editor (dont emit an event where user has clicked somewhere out of the screen)
+      const windowSelection = window.getSelection();
+      if(windowSelection.rangeCount>0){
+        // console.log('window selection rangecount >0');
+        const range = windowSelection.getRangeAt(0);
+        const clientRects = range.getClientRects();
+        if(clientRects.length > 0) {
+          // console.log('client rects >0');
+          const rects = clientRects[0];//cursor wil always be a single range so u can just ge tthe first range in the array
+          const loc = {top: rects.top, left: rects.left};
+          data = {incomingSelectionObj: selection, loc};
+
+          // console.log('about to emit cursor movement ');
+          //
+          // this.setState({editorState: originalEditorState, top, left, height: bottom - top})
+        }
+        // this.socket.emit('cursorMove', selection)
+      }
+
+
       this.props.socket.emit('change doc', {
         content: JSON.stringify(convertToRaw(editorState.getCurrentContent())),
         room: this.state.docId,
-        selectionState,
-        focusKey,
+        socketId: this.props.socket.id,
+        data
       });
     };
     this.focus = () => this.domEditor.focus();
@@ -58,24 +82,19 @@ class MyEditor extends React.Component {
     this.addCollab = this.addCollab.bind(this);
     this.props.socket.on('change doc', contents => {
       /* console.log("CONTENTS", contents); */
-      let newContentState = EditorState.createWithContent(convertFromRaw(JSON.parse(contents.content))).getCurrentContent();
-      let newSelectionState = SelectionState.createEmpty(contents.focusKey);
-
-      // set properties for cursor insertion
-      newSelectionState = newSelectionState.set('focusOffset', contents.selectionState.focusOffset);
-      newSelectionState = newSelectionState.set('anchorOffset', contents.selectionState.focusOffset);
-
+      // console.log("contents", contents);
+      console.log('contents', contents);
+      this.setState({top: contents.data.loc.top, left: contents.data.loc.left});
       // set properties for selection highlighting
       /* console.log("new contentState", newContentState); */
-      console.log("new selectionState", newSelectionState);
 
-      newContentState = Modifier.insertText(newContentState, newSelectionState, '|', {fontSize: '20px', color: 'blue'});
-      newContentState = Modifier.applyInlineStyle(newContentState, newSelectionState, 'BLUE');
+
+      // newContentState = Modifier.applyInlineStyle(newContentState, newSelectionState, 'BLUE');
 
       /* console.log("even newer contentState", newContentState); */
-      console.log("even newer selectionState", newSelectionState);
+      // console.log("even newer selectionState", newSelectionState);
 
-      this.setState({editorState: EditorState.createWithContent(newContentState)});
+      this.setState({editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(contents.content)))});
 
     });
   }
@@ -240,6 +259,7 @@ class MyEditor extends React.Component {
           className={className}
           onClick={this.focus}
         >
+          {this.state.top ? (<div style={{position: 'absolute', backgroundColor: 'blue', width: '2px', height: '15px', top: this.state.top, left: this.state.left}}></div>) : undefined}
           <Editor
             blockStyleFn={getBlockStyle}
             spellCheck={true}

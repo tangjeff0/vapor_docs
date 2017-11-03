@@ -87,7 +87,6 @@ function onConnect(socket) {
 
   socket.on('change doc', (contents) => {
     if(io.sockets.adapter.rooms[contents.room]) {
-      console.log("ROOM", io.sockets.adapter.rooms[contents.room]);
       socket.to(contents.room).emit('change doc', contents);
       rooms[contents.room]['currentContentState'] = contents.content;
     }
