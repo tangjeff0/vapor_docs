@@ -1,17 +1,20 @@
 import React from 'react';
-import {Editor, EditorState, RichUtils, convertFromRaw, convertToRaw, Modifier, SelectionState} from 'draft-js';
+import {Editor, EditorState, RichUtils, convertFromRaw, convertToRaw} from 'draft-js';
 import {Button, Icon, Row, Input, Modal} from 'react-materialize';
 import axios from 'axios';
-import {set} from 'immutable';
 import InlineStyleControls from './InlineStyleControls';
 import BlockStyleControls from './BlockStyleControls';
-
+import findAndReplaceDOMText from 'findandreplacedomtext';
+import _ from 'underscore';
 const styleMap = {
   RED :{
     color: 'red'
   },
   BLUE: {
     color: 'blue'
+  },
+  BLACK: {
+    color: 'black'
   },
   GREEN: {
     color: 'green'
@@ -24,7 +27,7 @@ const styleMap = {
   },
   LARGE: {
     fontSize: '20px'
-  },
+  }
 };
 
 class MyEditor extends React.Component {
@@ -36,16 +39,38 @@ class MyEditor extends React.Component {
       password: '',
       title: '',
       newCollab: '',
+      collabObj: {},
+      searchTerm:''
     };
+    console.log("socket", this.props.socket);
     this.onChange = (editorState) => {
       this.setState({editorState});
-      var selectionState = editorState.getSelection();
-      var focusKey = selectionState.getFocusKey();
+      let data;
+      //only emit a cursor event if it took place in the editor (dont emit an event where user has clicked somewhere out of the screen)
+      const windowSelection = window.getSelection();
+      if(windowSelection.rangeCount>0){
+        // console.log('window selection rangecount >0');
+        const range = windowSelection.getRangeAt(0);
+        const clientRects = range.getClientRects();
+        if(clientRects.length > 0) {
+          // console.log('client rects >0');
+          const rects = clientRects[0];//cursor wil always be a single range so u can just ge tthe first range in the array
+          const loc = {top: rects.top, left: rects.left, right: rects.right};
+          data = {loc};
+
+          // console.log('about to emit cursor movement ');
+          //
+          // this.setState({editorState: originalEditorState, top, left, height: bottom - top})
+        }
+        // this.socket.emit('cursorMove', selection)
+      }
+
+
       this.props.socket.emit('change doc', {
         content: JSON.stringify(convertToRaw(editorState.getCurrentContent())),
         room: this.state.docId,
-        selectionState,
-        focusKey,
+        socketId: this.props.socket.id,
+        data
       });
     };
     this.focus = () => this.domEditor.focus();
@@ -58,22 +83,14 @@ class MyEditor extends React.Component {
     this.addCollab = this.addCollab.bind(this);
     this.props.socket.on('change doc', contents => {
       /* console.log("CONTENTS", contents); */
-      let newContentState = EditorState.createWithContent(convertFromRaw(JSON.parse(contents.content))).getCurrentContent();
-      let newSelectionState = SelectionState.createEmpty(contents.focusKey);
+      // console.log("contents", contents);
 
-      // set properties for cursor insertion
-      newSelectionState = newSelectionState.set('focusOffset', contents.selectionState.focusOffset);
-      newSelectionState = newSelectionState.set('anchorOffset', contents.selectionState.focusOffset);
 
-      // set properties for selection highlighting
-      /* console.log("new contentState", newContentState); */
-      console.log("new selectionState", newSelectionState);
-
-      newContentState = Modifier.insertText(newContentState, newSelectionState, '|', {fontSize: '20px', color: 'blue'});
-      newContentState = Modifier.applyInlineStyle(newContentState, newSelectionState, 'BLUE');
-
-      /* console.log("even newer contentState", newContentState); */
-      console.log("even newer selectionState", newSelectionState);
+      const newUserObj = Object.assign({}, this.state.collabObj);
+      newUserObj[contents.socketId] = contents.userObj[contents.socketId];
+      this.setState({collabObj: newUserObj});
+      // console.log("contents.userObj", contents.userObj);
+      // this.setState({top: contents.data.loc.top, left: contents.data.loc.left});
 
       this.setState({editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(contents.content)))});
 
@@ -112,6 +129,14 @@ class MyEditor extends React.Component {
     this.setState({
       [name]: value
     });
+    if(name==="searchTerm") {
+      //Get element node Text
+      const editor = document.getElementsByClassName('RichEditor-editor')[0];
+      console.log("editor", editor);
+      console.log(findAndReplaceDOMText(editor, {
+        find: this.state.searchTerm
+      }));
+    }
   }
 
   saveDoc() {
@@ -182,45 +207,29 @@ class MyEditor extends React.Component {
   render() {
     let className = 'RichEditor-editor';
     const {editorState} = this.state;
-    var selectionState  = editorState.getSelection();
-    var currentContent  = editorState.getCurrentContent();
-    var anchorKey       = selectionState.getAnchorKey();
-    var start           = selectionState.getStartOffset();
-    var end             = selectionState.getEndOffset();
-    var curContentBlock = currentContent.getBlockForKey(anchorKey);
-    var selectedText    = curContentBlock.getText().slice(start, end);
-    const draftjsObj = {
-      selectionState,
-      currentContent,
-      curContentBlock,
-      selectedText,
-      start,
-      end,
-      anchorKey
-    };
-    /* console.log('draftjsObj', draftjsObj); */
 
+    /* console.log('draftjsObj', draftjsObj); */
     return (
       <div className="wrapper" style={{width: '95%'}}>
-
 			<Modal
         id='collabModal'
 				header='Add Friends'
-        actions={<Button onClick={this.addCollab} waves='light' className="save-doc">invite<Icon left>group_add</Icon></Button>}
+        actions={<Button onClick={this.addCollab} waves='light' className="save-doc">i n v i t e<Icon left>group_add</Icon></Button>}
       >
 				<Input onChange={this.handleInputChange} value={this.state.newCollab} name="newCollab" type="text" label="username" s={12} />
 			</Modal>
 			<Modal
         id='saveModal'
-				header='New DocTing - please enter password'
-        actions={<Button onClick={this.saveModal} waves='light' className="save-doc">Save<Icon left>save</Icon></Button>}
+				header='p r o t e c t y o u r d o c'
+        actions={<Button onClick={this.saveModal} waves='light' className="save-doc">s a v e<Icon left>save</Icon></Button>}
       >
-				<Input onChange={this.handleInputChange} value={this.state.password} name="password" type="password" label="password" s={12} />
+				<Input onChange={this.handleInputChange} value={this.state.password} name="password" type="password" label="p a s s w o r d" s={12} />
 			</Modal>
 
       <Row className="title-row">
         <Input className="title-input" s={6} name="title" label={this.state.title ? null : "Title"} value={this.state.title} onChange={this.handleInputChange}/>
-        <Button onClick={() => $('#collabModal').modal('open')} waves='light' className="save-doc">invite<Icon left>group_add</Icon></Button>
+        <Button onClick={() => $('#collabModal').modal('open')} waves='light' className="save-doc">i n v i t e<Icon left>group_add</Icon></Button>
+        <Input name="searchTerm" onChange={this.handleInputChange} value={this.state.searchTerm} label="Search" validate><Icon>search</Icon></Input>
       </Row>
 
       <div className="RichEditor-root">
@@ -240,6 +249,27 @@ class MyEditor extends React.Component {
           className={className}
           onClick={this.focus}
         >
+          {_.map(this.state.collabObj, (val, key) => {
+            console.log("val", val);
+            if(val) {
+              if(val.hasOwnProperty('top')) {
+                if(val.left !== val.right) {
+                  return(
+                    <div key={val.color} style={{position: 'absolute', opacity: 0.2, zIndex: 0, backgroundColor: val.color, width: Math.abs(val.left - val.right) + 'px', height: '15px', top: val.top, left: val.left}}></div>
+                  );
+                }
+                return (
+                  <div key={val.color} style={{position: 'absolute', backgroundColor: val.color, width: '2px', height: '15px', top: val.top, left: val.left}}></div>
+                );
+              } else{
+                return <div key={key}></div>;
+              }
+            }
+            return <div key={key}></div>;
+
+
+          })}
+
           <Editor
             blockStyleFn={getBlockStyle}
             spellCheck={true}
@@ -252,7 +282,7 @@ class MyEditor extends React.Component {
 
       </div>
 
-      <Button onClick={this.saveDoc} waves='light' className="save-doc">Save<Icon left>save</Icon></Button>
+      <Button onClick={this.saveDoc} waves='light' className="save-doc">s a v e<Icon left>save</Icon></Button>
 
       </div>
     );

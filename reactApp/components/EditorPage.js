@@ -7,7 +7,8 @@ import io from 'socket.io-client';
 class EditorPage extends React.Component {
   constructor(props) {
     super(props);
-    const socket = io("http://10.2.106.91:3000/");
+    /* const socket = io("http://10.2.106.91:3000/"); */
+    const socket = io("http://localhost:3000/");
     this.state = {
       socket
     };
@@ -19,8 +20,8 @@ class EditorPage extends React.Component {
   }
   render() {
     return (
-      <div className="container" style={{backgroundColor: '#2bbbad', paddingTop: '20px', paddingLeft: '40px', position:'absolute', width: '100%', height: '100%', top: '0', left: '0'}}>
-        <Link style={{color: 'white', marginBottom: '15px'}} to="/"><Icon>arrow_back</Icon></Link>
+      <div className="container EditorPage" >
+        <Link style={{color: 'white', marginBottom: '15px'}} to="/"><Icon className='blue-arrow'>arrow_back</Icon></Link>
         <MyEditor docId={this.props.docId} socket={this.state.socket}/>
       </div>
     );

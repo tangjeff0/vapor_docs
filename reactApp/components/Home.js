@@ -82,27 +82,21 @@ class Home extends React.Component {
     if (this.state.user) {
       return (
         <div className="container loggedin-homepage">
-          <Button onClick={this.logoutUser} waves='light' className='save-doc' style={{alignSelf: 'flex-start', position: 'absolute', marginLeft: '20px'}}>Logout<Icon left>navigate_before</Icon></Button>
-          <h3 style={{color: 'white'}} >All your DocTings. In one place. </h3>
+          <Button onClick={this.logoutUser} waves='light' className='blue darken-2' style={{alignSelf: 'flex-start', position: 'absolute', marginLeft: '20px',  marginTop: '20px'}}>l o g o u t<Icon left>navigate_before</Icon></Button>
+          <h2 style={{color: '#1976d2', fontStyle: 'italic'}} >// <b>\/ /\</b> P O R D O C S </h2>
           <div>
-          <Link to="/newEditor"><Button floating large className='red' waves='light' icon='add'>Create a new document </Button></Link>
+          <Link to="/newEditor"><Button floating large className='blue darken-2' waves='light' icon='add'>Create a new document</Button></Link>
           </div>
           <div className="doc-container">
             {this.state.docs.map(doc => {
 
-              /* return ( */
-              /*   <Link key={doc._id} to={'/doc/' + this.state.docId}> */
-              /*     <p>{doc.title}</p> */
-              /*   </Link> */
-              /* ); */
-
               return (
-                <p key={doc._id}>
-                  <a href='#' onClick={() => {
+                <p key={doc._id} >
+                  <a href='#' style={{fontStyle: 'italic', color:'#31bfb4', fontSize: '2em'}} onClick={() => {
                     this.setState({docId: doc._id});
                     $('#docPasswordModal').modal('open');
                   }}>
-                    {doc.title}
+                    >> {doc.title}
                   </a>
                 </p>
               );
@@ -112,17 +106,17 @@ class Home extends React.Component {
 
         <Modal
           id='docPasswordModal'
-          header='Doc Password'
+          header='P /\ S S \/\/ O R D'
           actions={
             this.state.lockedDoc ?
-              <Button onClick={this.checkDocPassword} waves='light' className="save-doc">locked<Icon left>lock</Icon></Button>
+              <Button onClick={this.checkDocPassword} waves='light' className="blue darken-2">u n l o c k<Icon left>lock</Icon></Button>
               :
               <Link to={'/doc/' + this.state.docId}>
-                <Button onClick={() => $('#docPasswordModal').modal('close')} waves='light' className="save-doc">unlocked<Icon left>lock_open</Icon></Button>
+                <Button onClick={() => $('#docPasswordModal').modal('close')} waves='light' className="blue darken-2">g o<Icon left>exit_to_app</Icon></Button>
               </Link>
           }
         >
-          <Input onChange={this.handleInputChange} value={this.state.docPassword} name="docPassword" type="password" label="password" s={12} />
+          <Input onChange={this.handleInputChange} value={this.state.docPassword} name="docPassword" type="password" label="p a s s w o r d" s={12} />
         </Modal>
 
         </div>
@@ -132,12 +126,12 @@ class Home extends React.Component {
       <div className="container home-page">
         <div className="color-overlay"></div>
         <div style={{color: 'white', zIndex: 4, textAlign: 'center'}}>
-        <h2 style={{color: 'white'}}> DocTings </h2>
+        <h2 style={{color: 'pink', fontStyle: 'italic'}}> // <b>\/ /\</b> P O R D O C S </h2>
         <Row>
-          <Input onChange={this.handleInputChange} value={this.state.username} name="username" type="text" label="Username" s={12} />
-          <Input onChange={this.handleInputChange} value={this.state.password} name="password" type="password" label="password" s={12} />
+          <Input onChange={this.handleInputChange} value={this.state.username} name="username" type="text" label="u s e r n a m e" s={12} />
+          <Input onChange={this.handleInputChange} value={this.state.password} name="password" type="password" label="p a s s w o r d" s={12} />
         </Row>
-        <Button onClick={this.loginUser} waves='light'>Login to Docs<Icon left>exit_to_app</Icon></Button>
+        <Button onClick={this.loginUser} className='blue darken-2' waves='light'>l o g i n<Icon left>exit_to_app</Icon></Button>
         </div>
       </div>
     );

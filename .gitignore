@@ -2,6 +2,7 @@
 node_modules
 !build/styles.css
 !build/index.*
+build/materialize-src/
 env.sh
 
 # Logs
