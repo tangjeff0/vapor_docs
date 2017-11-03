@@ -14,7 +14,12 @@ input.title-input {
   color: #1976d2 !important;/* pink */
   border-bottom: 1px solid #1976d2 !important;
 }
-
+.search-bar {
+  color: white !important;
+}
+.search-bar label {
+  color: white !important;
+}
 .material-icons {
   color: #f48fb1 !important;
 }

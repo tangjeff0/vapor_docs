@@ -44,7 +44,7 @@ function searchNodes(node, searchTerm, nodeArray) {
       //find character width;
       const characterWidth = Math.abs(node.parentNode.getBoundingClientRect().left - node.parentNode.getBoundingClientRect().right )/node.textContent.length;
       console.log("characterWidth", characterWidth);
-      nodeArray.push({node, index: node.textContent.indexOf(searchTerm), position: node.parentNode.getBoundingClientRect(), characterWidth});
+      nodeArray.push({node, index: node.textContent.indexOf(searchTerm), position: node.parentNode.getBoundingClientRect(), characterWidth, searchTerm: searchTerm.length});
     }
 
   }
@@ -251,7 +251,7 @@ class MyEditor extends React.Component {
       <Row className="title-row">
         <Input className="title-input" s={6} name="title" label={this.state.title ? null : "Title"} value={this.state.title} onChange={this.handleInputChange}/>
         <Button onClick={() => $('#collabModal').modal('open')} waves='light' className="save-doc">i n v i t e<Icon left>group_add</Icon></Button>
-        <Input name="searchTerm" onChange={this.handleInputChange} value={this.state.searchTerm} label="Search" validate><Icon>search</Icon></Input>
+        <Input className="search-bar" name="searchTerm" onChange={this.handleInputChange} value={this.state.searchTerm} label="Search" validate><Icon>search</Icon></Input>
       </Row>
 
       <div className="RichEditor-root">
@@ -294,7 +294,7 @@ class MyEditor extends React.Component {
           {this.state.searchArray.map(searchObj => {
             console.log("leftIndex before",searchObj.position.left, searchObj.index);
             const leftIndex = searchObj.position.left + (searchObj.index*searchObj.characterWidth);
-            const width = searchObj.index * 2;
+            const width = searchObj.searchTerm *searchObj.characterWidth;
             console.log("leftIndex", leftIndex);
             return (
               <div key={searchObj.top} style={{position: 'absolute', backgroundColor: 'yellow', opacity: 0.2, width: width + 'px', height: '15px', top: searchObj.position.top, left: leftIndex + 'px'}}></div>
