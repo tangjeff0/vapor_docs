@@ -83,18 +83,12 @@ class Home extends React.Component {
       return (
         <div className="container loggedin-homepage">
           <Button onClick={this.logoutUser} waves='light' className='save-doc' style={{alignSelf: 'flex-start', position: 'absolute', marginLeft: '20px'}}>Logout<Icon left>navigate_before</Icon></Button>
-          <h3 style={{color: 'white'}} >All your DocTings. In one place. </h3>
+          <h3 style={{color: '#4e8fff', fontStyle: 'italic'}} >VaporDocs ~</h3>
           <div>
           <Link to="/newEditor"><Button floating large className='red' waves='light' icon='add'>Create a new document </Button></Link>
           </div>
           <div className="doc-container">
             {this.state.docs.map(doc => {
-
-              /* return ( */
-              /*   <Link key={doc._id} to={'/doc/' + this.state.docId}> */
-              /*     <p>{doc.title}</p> */
-              /*   </Link> */
-              /* ); */
 
               return (
                 <p key={doc._id}>
@@ -132,7 +126,7 @@ class Home extends React.Component {
       <div className="container home-page">
         <div className="color-overlay"></div>
         <div style={{color: 'white', zIndex: 4, textAlign: 'center'}}>
-        <h2 style={{color: 'white'}}> DocTings </h2>
+        <h2 style={{color: 'white', fontStyle: 'italic'}}> // V A P O R D O C S </h2>
         <Row>
           <Input onChange={this.handleInputChange} value={this.state.username} name="username" type="text" label="Username" s={12} />
           <Input onChange={this.handleInputChange} value={this.state.password} name="password" type="password" label="password" s={12} />

@@ -2,16 +2,18 @@ import React from 'react';
 import {Editor, EditorState, RichUtils, convertFromRaw, convertToRaw, Modifier, SelectionState} from 'draft-js';
 import {Button, Icon, Row, Input, Modal} from 'react-materialize';
 import axios from 'axios';
-import {set} from 'immutable';
 import InlineStyleControls from './InlineStyleControls';
 import BlockStyleControls from './BlockStyleControls';
-
+import _ from 'underscore';
 const styleMap = {
   RED :{
     color: 'red'
   },
   BLUE: {
     color: 'blue'
+  },
+  BLACK: {
+    color: 'black'
   },
   GREEN: {
     color: 'green'
@@ -24,7 +26,7 @@ const styleMap = {
   },
   LARGE: {
     fontSize: '20px'
-  },
+  }
 };
 
 class MyEditor extends React.Component {
@@ -36,7 +38,7 @@ class MyEditor extends React.Component {
       password: '',
       title: '',
       newCollab: '',
-      cursorTracker: {},
+      collabObj: {},
       top: null,
       left: null
     };
@@ -84,15 +86,12 @@ class MyEditor extends React.Component {
       /* console.log("CONTENTS", contents); */
       // console.log("contents", contents);
       console.log('contents', contents);
-      this.setState({top: contents.data.loc.top, left: contents.data.loc.left});
-      // set properties for selection highlighting
-      /* console.log("new contentState", newContentState); */
 
-
-      // newContentState = Modifier.applyInlineStyle(newContentState, newSelectionState, 'BLUE');
-
-      /* console.log("even newer contentState", newContentState); */
-      // console.log("even newer selectionState", newSelectionState);
+      const newUserObj = Object.assign({}, this.state.collabObj);
+      newUserObj[contents.socketId] = contents.userObj[contents.socketId];
+      this.setState({collabObj: newUserObj});
+      // console.log("contents.userObj", contents.userObj);
+      // this.setState({top: contents.data.loc.top, left: contents.data.loc.left});
 
       this.setState({editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(contents.content)))});
 
@@ -201,24 +200,9 @@ class MyEditor extends React.Component {
   render() {
     let className = 'RichEditor-editor';
     const {editorState} = this.state;
-    var selectionState  = editorState.getSelection();
-    var currentContent  = editorState.getCurrentContent();
-    var anchorKey       = selectionState.getAnchorKey();
-    var start           = selectionState.getStartOffset();
-    var end             = selectionState.getEndOffset();
-    var curContentBlock = currentContent.getBlockForKey(anchorKey);
-    var selectedText    = curContentBlock.getText().slice(start, end);
-    const draftjsObj = {
-      selectionState,
-      currentContent,
-      curContentBlock,
-      selectedText,
-      start,
-      end,
-      anchorKey
-    };
-    /* console.log('draftjsObj', draftjsObj); */
 
+    /* console.log('draftjsObj', draftjsObj); */
+    console.log("this collabObj", this.state.collabObj);
     return (
       <div className="wrapper" style={{width: '95%'}}>
 
@@ -259,7 +243,22 @@ class MyEditor extends React.Component {
           className={className}
           onClick={this.focus}
         >
-          {this.state.top ? (<div style={{position: 'absolute', backgroundColor: 'blue', width: '2px', height: '15px', top: this.state.top, left: this.state.left}}></div>) : undefined}
+          {_.map(this.state.collabObj, (val, key) => {
+            console.log("val", val);
+            if(val) {
+              if(val.hasOwnProperty('top')) {
+                return (
+                  <div style={{position: 'absolute', backgroundColor: val.color, width: '2px', height: '15px', top: val.top, left: val.left}}></div>
+                );
+              } else{
+                return <div></div>;
+              }
+            }
+            return <div></div>;
+
+
+          })}
+
           <Editor
             blockStyleFn={getBlockStyle}
             spellCheck={true}

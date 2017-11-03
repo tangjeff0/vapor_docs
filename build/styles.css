@@ -3,7 +3,9 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  background-image: url("https://thumbs.mic.com/NTYxNDYyYTgwMCMvdjBHZmQyT0l0SXNJY0ROOGZMVnJSWjJMNVZnPS82NXgxMjI6MTE5NHg3NDIvMTYwMHg5MDAvZmlsdGVyczpmb3JtYXQoanBlZyk6cXVhbGl0eSg4MCkvaHR0cHM6Ly9zMy5hbWF6b25hd3MuY29tL3BvbGljeW1pYy1pbWFnZXMvY2R4ZWNubnhvZndtamJscjhubXB5cWZybGZsbHcybjk4ajF1NWQ4OWxhZXRwMXVuODV3MXZxOTRxaDllbm5lbS5qcGc.jpg");
+  background-image: url("https://thumbs.gfycat.com/DisastrousColorlessHummingbird-size_restricted.gif");
+	background-repeat: no-repeat;
+  background-size: cover;
   background-color: rgba(0,0,0,0.6);
   position: absolute;
   width: 100%;
@@ -16,7 +18,9 @@
   display: flex;
   align-items: center;
   flex-direction: column;
-  background-color: #2bbbad;
+  background-image: url("https://i.redditmedia.com/MKGKUzgHmk8asK_l-qFDJ5TSBUVFExVxUsl1RJt1UYM.jpg?w=640&s=0fb00e362d3b9c874c8eebc9cb16da98");
+	background-repeat: no-repeat;
+  background-size: cover;
   position: absolute;
   width: 100%;
   height: 100%;
