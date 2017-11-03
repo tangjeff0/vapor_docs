@@ -38,9 +38,7 @@ class MyEditor extends React.Component {
       password: '',
       title: '',
       newCollab: '',
-      collabObj: {},
-      top: null,
-      left: null
+      collabObj: {}
     };
     console.log("socket", this.props.socket);
     this.onChange = (editorState) => {
@@ -244,17 +242,17 @@ class MyEditor extends React.Component {
           onClick={this.focus}
         >
           {_.map(this.state.collabObj, (val, key) => {
-            console.log("val", val);
+
             if(val) {
               if(val.hasOwnProperty('top')) {
                 return (
-                  <div style={{position: 'absolute', backgroundColor: val.color, width: '2px', height: '15px', top: val.top, left: val.left}}></div>
+                  <div key={val.color} style={{position: 'absolute', backgroundColor: val.color, width: '2px', height: '15px', top: val.top, left: val.left}}></div>
                 );
               } else{
-                return <div></div>;
+                return <div key={key}></div>;
               }
             }
-            return <div></div>;
+            return <div key={key}></div>;
 
 
           })}

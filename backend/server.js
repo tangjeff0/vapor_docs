@@ -94,7 +94,6 @@ function onConnect(socket) {
       contents.userObj = {};
 
       if(contents.data) {
-        console.log("content data", contents.data.loc.top);
         contents.userObj[contents.socketId] = {color: selectedColor, top: contents.data.loc.top, left: contents.data.loc.left};
       }
 
