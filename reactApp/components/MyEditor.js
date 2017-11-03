@@ -29,7 +29,26 @@ const styleMap = {
     fontSize: '20px'
   }
 };
+function searchNodes(node, searchTerm, nodeArray) {
+  if(node.hasChildNodes()) {
+    var children = node.childNodes;
+    for(var i =0; i < children.length; i++) {
+      searchNodes(children[i], searchTerm, nodeArray);
+    }
+  } else {
+    if(node.textContent.indexOf(searchTerm) > -1){
 
+      const stringsplit = node.textContent.split(searchTerm);
+      // let newHTML = '<span>' + stringsplit[0] + "<span style='background-color: yellow'>" + searchTerm + "</span>" + stringsplit[1] + '</span>';
+      // node.innerHTML = newHTML;
+      //find character width;
+      const characterWidth = Math.abs(node.parentNode.getBoundingClientRect().left - node.parentNode.getBoundingClientRect().right )/node.textContent.length;
+      console.log("characterWidth", characterWidth);
+      nodeArray.push({node, index: node.textContent.indexOf(searchTerm), position: node.parentNode.getBoundingClientRect(), characterWidth});
+    }
+
+  }
+}
 class MyEditor extends React.Component {
   constructor(props) {
     super(props);
@@ -40,7 +59,8 @@ class MyEditor extends React.Component {
       title: '',
       newCollab: '',
       collabObj: {},
-      searchTerm:''
+      searchTerm:'',
+      searchArray: []
     };
     console.log("socket", this.props.socket);
     this.onChange = (editorState) => {
@@ -131,11 +151,13 @@ class MyEditor extends React.Component {
     });
     if(name==="searchTerm") {
       //Get element node Text
-      const editor = document.getElementsByClassName('RichEditor-editor')[0];
+      const editor = document.getElementsByClassName('public-DraftEditor-content')[0];
       console.log("editor", editor);
-      console.log(findAndReplaceDOMText(editor, {
-        find: this.state.searchTerm
-      }));
+      const node = editor;
+      const nodeArray = [];
+      searchNodes(node, value, nodeArray);
+      console.log("node arr", nodeArray);
+      this.setState({searchArray: nodeArray});
     }
   }
 
@@ -269,7 +291,15 @@ class MyEditor extends React.Component {
 
 
           })}
-
+          {this.state.searchArray.map(searchObj => {
+            console.log("leftIndex before",searchObj.position.left, searchObj.index);
+            const leftIndex = searchObj.position.left + (searchObj.index*searchObj.characterWidth);
+            const width = searchObj.index * 2;
+            console.log("leftIndex", leftIndex);
+            return (
+              <div key={searchObj.top} style={{position: 'absolute', backgroundColor: 'yellow', opacity: 0.2, width: width + 'px', height: '15px', top: searchObj.position.top, left: leftIndex + 'px'}}></div>
+            );
+          })}
           <Editor
             blockStyleFn={getBlockStyle}
             spellCheck={true}
