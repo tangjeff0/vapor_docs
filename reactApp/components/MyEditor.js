@@ -4,6 +4,7 @@ import {Button, Icon, Row, Input, Modal} from 'react-materialize';
 import axios from 'axios';
 import InlineStyleControls from './InlineStyleControls';
 import BlockStyleControls from './BlockStyleControls';
+import findAndReplaceDOMText from 'findandreplacedomtext';
 import _ from 'underscore';
 const styleMap = {
   RED :{
@@ -38,7 +39,8 @@ class MyEditor extends React.Component {
       password: '',
       title: '',
       newCollab: '',
-      collabObj: {}
+      collabObj: {},
+      searchTerm:''
     };
     console.log("socket", this.props.socket);
     this.onChange = (editorState) => {
@@ -46,12 +48,10 @@ class MyEditor extends React.Component {
       let data;
       //only emit a cursor event if it took place in the editor (dont emit an event where user has clicked somewhere out of the screen)
       const windowSelection = window.getSelection();
-      console.log("windowSelection", windowSelection);
       if(windowSelection.rangeCount>0){
         // console.log('window selection rangecount >0');
         const range = windowSelection.getRangeAt(0);
         const clientRects = range.getClientRects();
-        console.log("clientRects", clientRects);
         if(clientRects.length > 0) {
           // console.log('client rects >0');
           const rects = clientRects[0];//cursor wil always be a single range so u can just ge tthe first range in the array
@@ -129,6 +129,14 @@ class MyEditor extends React.Component {
     this.setState({
       [name]: value
     });
+    if(name==="searchTerm") {
+      //Get element node Text
+      const editor = document.getElementsByClassName('RichEditor-editor')[0];
+      console.log("editor", editor);
+      console.log(findAndReplaceDOMText(editor, {
+        find: this.state.searchTerm
+      }));
+    }
   }
 
   saveDoc() {
@@ -203,7 +211,6 @@ class MyEditor extends React.Component {
     /* console.log('draftjsObj', draftjsObj); */
     return (
       <div className="wrapper" style={{width: '95%'}}>
-
 			<Modal
         id='collabModal'
 				header='Add Friends'
@@ -222,6 +229,7 @@ class MyEditor extends React.Component {
       <Row className="title-row">
         <Input className="title-input" s={6} name="title" label={this.state.title ? null : "Title"} value={this.state.title} onChange={this.handleInputChange}/>
         <Button onClick={() => $('#collabModal').modal('open')} waves='light' className="save-doc">invite<Icon left>group_add</Icon></Button>
+        <Input name="searchTerm" onChange={this.handleInputChange} value={this.state.searchTerm} label="Search" validate><Icon>search</Icon></Input>
       </Row>
 
       <div className="RichEditor-root">
