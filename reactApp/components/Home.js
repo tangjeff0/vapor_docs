@@ -83,7 +83,7 @@ class Home extends React.Component {
       return (
         <div className="container loggedin-homepage">
           <Button onClick={this.logoutUser} waves='light' className='save-doc' style={{alignSelf: 'flex-start', position: 'absolute', marginLeft: '20px'}}>Logout<Icon left>navigate_before</Icon></Button>
-          <h3 style={{color: '#4e8fff', fontStyle: 'italic'}} >VaporDocs ~</h3>
+          <h2 style={{color: '#4e8fff', fontStyle: 'italic'}} >VaporDocs ~</h2>
           <div>
           <Link to="/newEditor"><Button floating large className='red' waves='light' icon='add'>Create a new document </Button></Link>
           </div>
@@ -91,12 +91,12 @@ class Home extends React.Component {
             {this.state.docs.map(doc => {
 
               return (
-                <p key={doc._id}>
-                  <a href='#' onClick={() => {
+                <p key={doc._id} >
+                  <a href='#' style={{fontStyle: 'italic', color:'pink', fontSize: '2em'}} onClick={() => {
                     this.setState({docId: doc._id});
                     $('#docPasswordModal').modal('open');
                   }}>
-                    {doc.title}
+                    >> {doc.title}
                   </a>
                 </p>
               );
@@ -131,7 +131,7 @@ class Home extends React.Component {
           <Input onChange={this.handleInputChange} value={this.state.username} name="username" type="text" label="Username" s={12} />
           <Input onChange={this.handleInputChange} value={this.state.password} name="password" type="password" label="password" s={12} />
         </Row>
-        <Button onClick={this.loginUser} waves='light'>Login to Docs<Icon left>exit_to_app</Icon></Button>
+        <Button onClick={this.loginUser} className='pink lighten-1' waves='purple'>Login to Docs<Icon left>exit_to_app</Icon></Button>
         </div>
       </div>
     );
