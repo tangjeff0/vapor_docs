@@ -83,7 +83,7 @@ class Home extends React.Component {
       return (
         <div className="container loggedin-homepage">
           <Button onClick={this.logoutUser} waves='light' className='blue darken-2' style={{alignSelf: 'flex-start', position: 'absolute', marginLeft: '20px',  marginTop: '20px'}}>l o g o u t<Icon left>navigate_before</Icon></Button>
-          <h2 style={{color: '#1976d2', fontStyle: 'italic'}} >// <b>\/</b> A P O R D O C S </h2>
+          <h2 style={{color: '#1976d2', fontStyle: 'italic'}} >// <b>\/ /\</b> P O R D O C S </h2>
           <div>
           <Link to="/newEditor"><Button floating large className='blue darken-2' waves='light' icon='add'>Create a new document</Button></Link>
           </div>
@@ -126,7 +126,7 @@ class Home extends React.Component {
       <div className="container home-page">
         <div className="color-overlay"></div>
         <div style={{color: 'white', zIndex: 4, textAlign: 'center'}}>
-        <h2 style={{color: 'white', fontStyle: 'italic'}}> // <b>\/</b> /\ P O R D O C S </h2>
+        <h2 style={{color: 'pink', fontStyle: 'italic'}}> // <b>\/ /\</b> P O R D O C S </h2>
         <Row>
           <Input onChange={this.handleInputChange} value={this.state.username} name="username" type="text" label="u s e r n a m e" s={12} />
           <Input onChange={this.handleInputChange} value={this.state.password} name="password" type="password" label="p a s s w o r d" s={12} />

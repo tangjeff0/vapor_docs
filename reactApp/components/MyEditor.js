@@ -207,21 +207,21 @@ class MyEditor extends React.Component {
 			<Modal
         id='collabModal'
 				header='Add Friends'
-        actions={<Button onClick={this.addCollab} waves='light' className="save-doc">invite<Icon left>group_add</Icon></Button>}
+        actions={<Button onClick={this.addCollab} waves='light' className="save-doc">i n v i t e<Icon left>group_add</Icon></Button>}
       >
 				<Input onChange={this.handleInputChange} value={this.state.newCollab} name="newCollab" type="text" label="username" s={12} />
 			</Modal>
 			<Modal
         id='saveModal'
-				header='New DocTing - please enter password'
-        actions={<Button onClick={this.saveModal} waves='light' className="save-doc">Save<Icon left>save</Icon></Button>}
+				header='p r o t e c t y o u r d o c'
+        actions={<Button onClick={this.saveModal} waves='light' className="save-doc">s a v e<Icon left>save</Icon></Button>}
       >
-				<Input onChange={this.handleInputChange} value={this.state.password} name="password" type="password" label="password" s={12} />
+				<Input onChange={this.handleInputChange} value={this.state.password} name="password" type="password" label="p a s s w o r d" s={12} />
 			</Modal>
 
       <Row className="title-row">
         <Input className="title-input" s={6} name="title" label={this.state.title ? null : "Title"} value={this.state.title} onChange={this.handleInputChange}/>
-        <Button onClick={() => $('#collabModal').modal('open')} waves='light' className="save-doc">invite<Icon left>group_add</Icon></Button>
+        <Button onClick={() => $('#collabModal').modal('open')} waves='light' className="save-doc">i n v i t e<Icon left>group_add</Icon></Button>
       </Row>
 
       <div className="RichEditor-root">
@@ -269,7 +269,7 @@ class MyEditor extends React.Component {
 
       </div>
 
-      <Button onClick={this.saveDoc} waves='light' className="save-doc">Save<Icon left>save</Icon></Button>
+      <Button onClick={this.saveDoc} waves='light' className="save-doc">s a v e<Icon left>save</Icon></Button>
 
       </div>
     );
