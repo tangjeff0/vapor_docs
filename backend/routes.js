@@ -52,6 +52,7 @@ module.exports = (passport) => {
       collaborators: [req.user.id],
       title: req.body.title,
       contents: req.body.contents,
+      revision_history: [{timestamp: new Date().getTime(), contents: req.body.contents}],
     })
     .then(doc => { res.json({doc}); })
     .catch(err => { res.json({err}); });
@@ -63,7 +64,7 @@ module.exports = (passport) => {
       doc.title =  req.body.title || doc.title;
       doc.contents = req.body.contents;
       doc.last_edit = new Date().getTime();
-      doc.revision_history = [...doc.revision_history, req.body.contents];
+      doc.revision_history = [...doc.revision_history, {timestamp: doc.last_edit, contents: req.body.contents}];
       doc.save().then(doc => { res.json({doc}); })
       .catch(err => { res.json({err}); });
     })

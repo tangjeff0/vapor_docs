@@ -1,6 +1,6 @@
 import React from 'react';
 import {Editor, EditorState, RichUtils, convertFromRaw, convertToRaw} from 'draft-js';
-import {Button, Icon, Row, Input, Modal, SideNav, SideNavItem} from 'react-materialize';
+import {Button, Icon, Row, Input, Modal, SideNav, SideNavItem, Collection, CollectionItem} from 'react-materialize';
 import axios from 'axios';
 import InlineStyleControls from './InlineStyleControls';
 import BlockStyleControls from './BlockStyleControls';
@@ -40,7 +40,8 @@ class MyEditor extends React.Component {
       title: '',
       newCollab: '',
       collabObj: {},
-      searchTerm:''
+      searchTerm:'',
+      revisions: [],
     };
     console.log("socket", this.props.socket);
     this.onChange = (editorState) => {
@@ -115,6 +116,7 @@ class MyEditor extends React.Component {
       this.setState({
         title: resp.data.doc.title,
         editorState: EditorState.createWithContent(newEditorState),
+        revisions: resp.data.doc.revision_history,
       });
     })
     .catch(err => {
@@ -149,7 +151,8 @@ class MyEditor extends React.Component {
         title: this.state.title,
       })
       .then(resp => {
-        console.log('convertToRaw', convertToRaw(this.state.editorState.getCurrentContent()));
+        this.setState({revisions: resp.data.doc.revision_history});
+        /* console.log('convertToRaw', convertToRaw(this.state.editorState.getCurrentContent())); */
       })
       .catch(err => {
         console.log(err);
@@ -165,7 +168,7 @@ class MyEditor extends React.Component {
     })
     .then(resp => {
       console.log(resp);
-      this.setState({docId: resp.data.doc._id});
+      this.setState({docId: resp.data.doc._id, revisions: resp.data.doc.revision_history});
       $('#saveModal').modal('close');
     })
     .catch(err => {
@@ -216,7 +219,7 @@ class MyEditor extends React.Component {
 				header='Add Friends'
         actions={<Button onClick={this.addCollab} waves='light' className="save-doc">i n v i t e<Icon left>group_add</Icon></Button>}
       >
-				<Input onChange={this.handleInputChange} value={this.state.newCollab} name="newCollab" type="text" label="username" s={12} />
+				<Input onChange={this.handleInputChange} value={this.state.newCollab} name="newCollab" type="text" label="u s e r n a m e" s={12} />
 			</Modal>
 			<Modal
         id='saveModal'
@@ -229,7 +232,7 @@ class MyEditor extends React.Component {
       <Row className="title-row">
         <Input className="title-input" s={6} name="title" label={this.state.title ? null : "Title"} value={this.state.title} onChange={this.handleInputChange}/>
         <Button onClick={() => $('#collabModal').modal('open')} waves='light' className="save-doc">i n v i t e<Icon left>group_add</Icon></Button>
-        <Input name="searchTerm" onChange={this.handleInputChange} value={this.state.searchTerm} label="Search" validate><Icon>search</Icon></Input>
+        <Input name="searchTerm" onChange={this.handleInputChange} value={this.state.searchTerm} label="s e a r c h" validate><Icon>search</Icon></Input>
       </Row>
 
       <div className="RichEditor-root">
@@ -266,8 +269,6 @@ class MyEditor extends React.Component {
               }
             }
             return <div key={key}></div>;
-
-
           })}
 
           <Editor
@@ -282,19 +283,58 @@ class MyEditor extends React.Component {
 
       </div>
 
-      <VapeOutline currentContent={this.state.editorState.getCurrentContent()} />
-      <Button onClick={this.saveDoc} waves='light' className="save-doc">s a v e<Icon left>save</Icon></Button>
+      <Row className='bottom-row'>
+
+        <VapeOutline currentContent={this.state.editorState.getCurrentContent()} />
+        <Modal
+          header='R E V I S I O N S'
+          fixedFooter
+          trigger={<Button className='bottom-buttons'><Icon left>archive</Icon>r e v i s i o n s</Button>}
+        >
+          <Collection>
+            {this.state.revisions.map((rev,idx) => {
+              const dateInstance = new Date(rev.timestamp);
+              const dateStr = dateInstance.toString().slice(0, 24);
+              return (
+                <CollectionItem key={idx} className='revision-container'>
+                <a style={{color: '#2bbbad', fontStyle: 'italic'}} onClick={() =>  this.setState({editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(rev.contents)))}) }>
+                  // {dateStr}
+                </a>
+                </CollectionItem>
+              );
+            })}
+          </Collection>
+        </Modal>
+        <Button onClick={this.saveDoc} waves='light' className="bottom-buttons">s a v e<Icon left>save</Icon></Button>
+
+      </Row>
 
       </div>
     );
   }
 }
 
-const VapeOutline = (props) => {
-  const content = props.currentContent;
-  const blocks = content.getBlockMap()._list._tail.array;
-  let headers = [];
+          /* this.setState({editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(contents.content)))}); */
+      /* <WaveHistory revisions={this.state.docId} /> */
+/* const WaveHistory = (props) => { */
+/*   return ( */
+/*     <Modal */
+/*       header='R E V I S I O N S' */
+/*       fixedFooter */
+/*       trigger={<Button>R E V I S I O N S</Button>} */
+/*     > */
+/*       <Collection> */
+/*         <CollectionItem className='blue lighten-2'>Nov 2 - 10:15AM</CollectionItem> */
+/*         <CollectionItem className='blue lighten-2'>Nov 2 - 10:20AM</CollectionItem> */
+/*       this.setState({editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(contents.content)))}); */
+/*       </Collection> */
+/*     </Modal> */
+/*   ); */
+/* } */
 
+const VapeOutline = (props) => {
+  const blocks = props.currentContent.getBlockMap()._list._tail.array;
+  let headers = [];
   blocks.forEach(block => {
     const vNode = block[1].getInlineStyleAt(0)._map._list._tail;
     if (vNode) {
@@ -309,15 +349,14 @@ const VapeOutline = (props) => {
       });
     }
   });
-
   return (
     <SideNav
-    trigger={<Button className='blue darken-2'><Icon left>sort</Icon>Outline</Button>}
+    trigger={<Button className='bottom-buttons'><Icon left>sort</Icon>o u t l i n e</Button>}
       options={{ closeOnClick: true }}
     >
-      <h4 style={{fontStyle: 'italic'}}>O U T L I N E</h4>
+      <h4 style={{marginLeft: '20px', color: '#1976d2', fontStyle: 'italic'}}>O U T L I N E</h4>
       {headers.map((header, idx) => {
-        return <SideNavItem key={header + idx}>{idx + 1}. {header}</SideNavItem>
+        return <SideNavItem key={header + idx}><h5 style={{fontStyle: 'italic'}}className='blue-text text-lighten-2' >{idx + 1}// {header}</h5></SideNavItem>
       })}
     </SideNav>
   );

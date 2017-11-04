@@ -21,7 +21,7 @@ class EditorPage extends React.Component {
   render() {
     return (
       <div className="container EditorPage" >
-        <Link style={{color: 'white', marginBottom: '15px'}} to="/"><Icon className='blue-arrow'>arrow_back</Icon></Link>
+        <Link style={{color: 'white', marginBottom: '15px'}} to="/"><Icon className='blue-icon'>arrow_back</Icon></Link>
         <MyEditor docId={this.props.docId} socket={this.state.socket}/>
       </div>
     );
