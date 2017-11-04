@@ -4,7 +4,6 @@ import {Button, Icon, Row, Input, Modal, SideNav, SideNavItem, Collection, Colle
 import axios from 'axios';
 import InlineStyleControls from './InlineStyleControls';
 import BlockStyleControls from './BlockStyleControls';
-import findAndReplaceDOMText from 'findandreplacedomtext';
 import _ from 'underscore';
 const styleMap = {
   RED :{
@@ -29,7 +28,22 @@ const styleMap = {
     fontSize: '20px'
   }
 };
+function searchNodes(node, searchTerm, nodeArray) {
+  if(node.hasChildNodes()) {
+    var children = node.childNodes;
+    for(var i =0; i < children.length; i++) {
+      searchNodes(children[i], searchTerm, nodeArray);
+    }
+  } else {
+    if(node.textContent.indexOf(searchTerm) > -1){
+      //find character width;
+      const characterWidth = Math.abs(node.parentNode.getBoundingClientRect().left - node.parentNode.getBoundingClientRect().right )/node.textContent.length;
+      console.log("characterWidth", characterWidth);
+      nodeArray.push({node, index: node.textContent.indexOf(searchTerm), position: node.parentNode.getBoundingClientRect(), characterWidth, searchTerm: searchTerm.length});
+    }
 
+  }
+}
 class MyEditor extends React.Component {
   constructor(props) {
     super(props);
@@ -42,6 +56,7 @@ class MyEditor extends React.Component {
       collabObj: {},
       searchTerm:'',
       revisions: [],
+      searchArray: [],
     };
     console.log("socket", this.props.socket);
     this.onChange = (editorState) => {
@@ -92,8 +107,8 @@ class MyEditor extends React.Component {
       this.setState({collabObj: newUserObj});
       // console.log("contents.userObj", contents.userObj);
       // this.setState({top: contents.data.loc.top, left: contents.data.loc.left});
-
-      this.setState({editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(contents.content)))});
+      let newEditorState = EditorState.createWithContent(convertFromRaw(JSON.parse(contents.content)));
+      this.setState({editorState: EditorState.forceSelection(newEditorState, this.state.editorState.getSelection())});
 
     });
   }
@@ -133,11 +148,11 @@ class MyEditor extends React.Component {
     });
     if(name==="searchTerm") {
       //Get element node Text
-      const editor = document.getElementsByClassName('RichEditor-editor')[0];
-      /* console.log("editor", editor); */
-      console.log(findAndReplaceDOMText(editor, {
-        find: this.state.searchTerm
-      }));
+      const editor = document.getElementsByClassName('public-DraftEditor-content')[0];
+      const node = editor;
+      const nodeArray = [];
+      searchNodes(node, value, nodeArray);
+      this.setState({searchArray: nodeArray});
     }
   }
 
@@ -270,7 +285,13 @@ class MyEditor extends React.Component {
             }
             return <div key={key}></div>;
           })}
-
+          {this.state.searchArray.map(searchObj => {
+            const leftIndex = searchObj.position.left + (searchObj.index*searchObj.characterWidth);
+            const width = searchObj.searchTerm *searchObj.characterWidth;
+            return (
+              <div key={searchObj.top} style={{position: 'absolute', backgroundColor: 'yellow', opacity: 0.2, width: width + 'px', height: '15px', top: searchObj.position.top, left: leftIndex + 'px'}}></div>
+            );
+          })}
           <Editor
             blockStyleFn={getBlockStyle}
             spellCheck={true}
@@ -313,24 +334,6 @@ class MyEditor extends React.Component {
     );
   }
 }
-
-          /* this.setState({editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(contents.content)))}); */
-      /* <WaveHistory revisions={this.state.docId} /> */
-/* const WaveHistory = (props) => { */
-/*   return ( */
-/*     <Modal */
-/*       header='R E V I S I O N S' */
-/*       fixedFooter */
-/*       trigger={<Button>R E V I S I O N S</Button>} */
-/*     > */
-/*       <Collection> */
-/*         <CollectionItem className='blue lighten-2'>Nov 2 - 10:15AM</CollectionItem> */
-/*         <CollectionItem className='blue lighten-2'>Nov 2 - 10:20AM</CollectionItem> */
-/*       this.setState({editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(contents.content)))}); */
-/*       </Collection> */
-/*     </Modal> */
-/*   ); */
-/* } */
 
 const VapeOutline = (props) => {
   const blocks = props.currentContent.getBlockMap()._list._tail.array;
