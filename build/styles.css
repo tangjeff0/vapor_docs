@@ -23,7 +23,7 @@ input.title-input {
 .search-bar label {
   color: white !important;
 }
-.material-icons {
+.search-bar .material-icons {
   color: #f48fb1 !important;
 }
 
@@ -145,15 +145,13 @@ ul > li {
 
 .bottom-row {
   display: flex;
-  justify-content: space-around;
-  align-items: center;
+  justify-content: center;
   width: 100%;
 }
 
 .bottom-buttons {
   background-color: #1976d2;
-  margin-top: 20px;
-  margin-left: 120px;
+  margin: 20px 0 0 50px;
 }
 
 .save-doc {

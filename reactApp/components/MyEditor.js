@@ -289,7 +289,7 @@ class MyEditor extends React.Component {
             const leftIndex = searchObj.position.left + (searchObj.index*searchObj.characterWidth);
             const width = searchObj.searchTerm *searchObj.characterWidth;
             return (
-              <div key={searchObj.top} style={{position: 'absolute', backgroundColor: 'yellow', opacity: 0.2, width: width + 'px', height: '15px', top: searchObj.position.top, left: leftIndex + 'px'}}></div>
+              <div key={searchObj.top} style={{position: 'absolute', backgroundColor: 'blue', opacity: 0.2, width: width + 'px', height: '15px', top: searchObj.position.top, left: leftIndex + 'px'}}></div>
             );
           })}
           <Editor
