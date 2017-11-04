@@ -96,7 +96,7 @@ class Home extends React.Component {
                     this.setState({docId: doc._id});
                     $('#docPasswordModal').modal('open');
                   }}>
-                    >> {doc.title}
+                    ~> {doc.title}
                   </a>
                 </p>
               );

@@ -1,10 +1,9 @@
 import React from 'react';
 import {Editor, EditorState, RichUtils, convertFromRaw, convertToRaw} from 'draft-js';
-import {Button, Icon, Row, Input, Modal} from 'react-materialize';
+import {Button, Icon, Row, Input, Modal, SideNav, SideNavItem, Collection, CollectionItem} from 'react-materialize';
 import axios from 'axios';
 import InlineStyleControls from './InlineStyleControls';
 import BlockStyleControls from './BlockStyleControls';
-import findAndReplaceDOMText from 'findandreplacedomtext';
 import _ from 'underscore';
 const styleMap = {
   RED :{
@@ -29,7 +28,22 @@ const styleMap = {
     fontSize: '20px'
   }
 };
+function searchNodes(node, searchTerm, nodeArray) {
+  if(node.hasChildNodes()) {
+    var children = node.childNodes;
+    for(var i =0; i < children.length; i++) {
+      searchNodes(children[i], searchTerm, nodeArray);
+    }
+  } else {
+    if(node.textContent.indexOf(searchTerm) > -1){
+      //find character width;
+      const characterWidth = Math.abs(node.parentNode.getBoundingClientRect().left - node.parentNode.getBoundingClientRect().right )/node.textContent.length;
+      console.log("characterWidth", characterWidth);
+      nodeArray.push({node, index: node.textContent.indexOf(searchTerm), position: node.parentNode.getBoundingClientRect(), characterWidth, searchTerm: searchTerm.length});
+    }
 
+  }
+}
 class MyEditor extends React.Component {
   constructor(props) {
     super(props);
@@ -40,7 +54,9 @@ class MyEditor extends React.Component {
       title: '',
       newCollab: '',
       collabObj: {},
-      searchTerm:''
+      searchTerm:'',
+      revisions: [],
+      searchArray: [],
     };
     console.log("socket", this.props.socket);
     this.onChange = (editorState) => {
@@ -91,8 +107,8 @@ class MyEditor extends React.Component {
       this.setState({collabObj: newUserObj});
       // console.log("contents.userObj", contents.userObj);
       // this.setState({top: contents.data.loc.top, left: contents.data.loc.left});
-
-      this.setState({editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(contents.content)))});
+      let newEditorState = EditorState.createWithContent(convertFromRaw(JSON.parse(contents.content)));
+      this.setState({editorState: EditorState.forceSelection(newEditorState, this.state.editorState.getSelection())});
 
     });
   }
@@ -115,6 +131,7 @@ class MyEditor extends React.Component {
       this.setState({
         title: resp.data.doc.title,
         editorState: EditorState.createWithContent(newEditorState),
+        revisions: resp.data.doc.revision_history,
       });
     })
     .catch(err => {
@@ -131,11 +148,11 @@ class MyEditor extends React.Component {
     });
     if(name==="searchTerm") {
       //Get element node Text
-      const editor = document.getElementsByClassName('RichEditor-editor')[0];
-      console.log("editor", editor);
-      console.log(findAndReplaceDOMText(editor, {
-        find: this.state.searchTerm
-      }));
+      const editor = document.getElementsByClassName('public-DraftEditor-content')[0];
+      const node = editor;
+      const nodeArray = [];
+      searchNodes(node, value, nodeArray);
+      this.setState({searchArray: nodeArray});
     }
   }
 
@@ -149,7 +166,8 @@ class MyEditor extends React.Component {
         title: this.state.title,
       })
       .then(resp => {
-        console.log('convertToRaw', convertToRaw(this.state.editorState.getCurrentContent()));
+        this.setState({revisions: resp.data.doc.revision_history});
+        /* console.log('convertToRaw', convertToRaw(this.state.editorState.getCurrentContent())); */
       })
       .catch(err => {
         console.log(err);
@@ -165,7 +183,7 @@ class MyEditor extends React.Component {
     })
     .then(resp => {
       console.log(resp);
-      this.setState({docId: resp.data.doc._id});
+      this.setState({docId: resp.data.doc._id, revisions: resp.data.doc.revision_history});
       $('#saveModal').modal('close');
     })
     .catch(err => {
@@ -216,7 +234,7 @@ class MyEditor extends React.Component {
 				header='Add Friends'
         actions={<Button onClick={this.addCollab} waves='light' className="save-doc">i n v i t e<Icon left>group_add</Icon></Button>}
       >
-				<Input onChange={this.handleInputChange} value={this.state.newCollab} name="newCollab" type="text" label="username" s={12} />
+				<Input onChange={this.handleInputChange} value={this.state.newCollab} name="newCollab" type="text" label="u s e r n a m e" s={12} />
 			</Modal>
 			<Modal
         id='saveModal'
@@ -229,7 +247,7 @@ class MyEditor extends React.Component {
       <Row className="title-row">
         <Input className="title-input" s={6} name="title" label={this.state.title ? null : "Title"} value={this.state.title} onChange={this.handleInputChange}/>
         <Button onClick={() => $('#collabModal').modal('open')} waves='light' className="save-doc">i n v i t e<Icon left>group_add</Icon></Button>
-        <Input name="searchTerm" onChange={this.handleInputChange} value={this.state.searchTerm} label="Search" validate><Icon>search</Icon></Input>
+        <Input name="searchTerm" onChange={this.handleInputChange} value={this.state.searchTerm} label="s e a r c h" validate><Icon>search</Icon></Input>
       </Row>
 
       <div className="RichEditor-root">
@@ -250,7 +268,7 @@ class MyEditor extends React.Component {
           onClick={this.focus}
         >
           {_.map(this.state.collabObj, (val, key) => {
-            console.log("val", val);
+            /* console.log("val", val); */
             if(val) {
               if(val.hasOwnProperty('top')) {
                 if(val.left !== val.right) {
@@ -266,10 +284,14 @@ class MyEditor extends React.Component {
               }
             }
             return <div key={key}></div>;
-
-
           })}
-
+          {this.state.searchArray.map(searchObj => {
+            const leftIndex = searchObj.position.left + (searchObj.index*searchObj.characterWidth);
+            const width = searchObj.searchTerm *searchObj.characterWidth;
+            return (
+              <div key={searchObj.top} style={{position: 'absolute', backgroundColor: 'blue', opacity: 0.2, width: width + 'px', height: '15px', top: searchObj.position.top, left: leftIndex + 'px'}}></div>
+            );
+          })}
           <Editor
             blockStyleFn={getBlockStyle}
             spellCheck={true}
@@ -282,13 +304,67 @@ class MyEditor extends React.Component {
 
       </div>
 
-      <Button onClick={this.saveDoc} waves='light' className="save-doc">s a v e<Icon left>save</Icon></Button>
+      <Row className='bottom-row'>
+
+        <VapeOutline currentContent={this.state.editorState.getCurrentContent()} />
+        <Modal
+          header='R E V I S I O N S'
+          fixedFooter
+          trigger={<Button className='bottom-buttons'><Icon left>archive</Icon>r e v i s i o n s</Button>}
+        >
+          <Collection>
+            {this.state.revisions.map((rev,idx) => {
+              const dateInstance = new Date(rev.timestamp);
+              const dateStr = dateInstance.toString().slice(0, 24);
+              return (
+                <CollectionItem key={idx} className='revision-container'>
+                <a style={{color: '#2bbbad', fontStyle: 'italic'}} onClick={() =>  this.setState({editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(rev.contents)))}) }>
+                  // {dateStr}
+                </a>
+                </CollectionItem>
+              );
+            })}
+          </Collection>
+        </Modal>
+        <Button onClick={this.saveDoc} waves='light' className="bottom-buttons">s a v e<Icon left>save</Icon></Button>
+
+      </Row>
 
       </div>
     );
   }
 }
 
+const VapeOutline = (props) => {
+  const blocks = props.currentContent.getBlockMap()._list._tail.array;
+  let headers = [];
+  blocks.forEach(block => {
+    const vNode = block[1].getInlineStyleAt(0)._map._list._tail;
+    if (vNode) {
+      let ctr = 0;
+      vNode.array.forEach(style => {
+        if (style) {
+          if (style[0] === 'LARGE' || style[0] === 'BOLD') {
+            ctr++;
+            if (ctr === 2) { headers = [...headers, block[1].getText()]; }
+          }
+        }
+      });
+    }
+  });
+  return (
+    <SideNav
+    trigger={<Button className='bottom-buttons'><Icon left>sort</Icon>o u t l i n e</Button>}
+      options={{ closeOnClick: true }}
+    >
+      <h4 style={{marginLeft: '20px', color: '#1976d2', fontStyle: 'italic'}}>O U T L I N E</h4>
+      {headers.map((header, idx) => {
+        return <SideNavItem key={header + idx}><h5 style={{fontStyle: 'italic'}}className='blue-text text-lighten-2' >{idx + 1}// {header}</h5></SideNavItem>
+      })}
+    </SideNav>
+  );
+
+};
 
 const getBlockStyle = (block) => {
 
