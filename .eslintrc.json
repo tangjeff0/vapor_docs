@@ -10,6 +10,9 @@
   },
   "parser": "babel-eslint",
   "extends": "eslint:recommended",
+  "globals": {
+    "$": false
+  },
   "rules": {
     "linebreak-style": [2, "unix"],
     "default-case": 2,
