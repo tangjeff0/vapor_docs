@@ -25,6 +25,10 @@ class StyleButton extends React.Component {
       return (
         <Icon>format_underline</Icon>
       );
+    case 'Strikethrough':
+      return (
+        <Icon>format_strikethrough</Icon>
+      );
     case 'Left-Align':
       return (
         <Icon>format_align_left</Icon>

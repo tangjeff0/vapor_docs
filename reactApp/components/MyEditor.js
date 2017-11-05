@@ -88,7 +88,6 @@ class MyEditor extends React.Component {
         }
         // this.socket.emit('cursorMove', selection)
       }
-
       this.props.socket.emit('change doc', {
         content: JSON.stringify(convertToRaw(editorState.getCurrentContent())),
         room: this.state.docId,
@@ -311,7 +310,7 @@ class MyEditor extends React.Component {
                 const dateStr = dateInstance.toString().slice(0, 24);
                 return (
                   <CollectionItem key={idx} className='revision-container'>
-                    <a style={{color: '#2bbbad', fontStyle: 'italic'}}
+                    <a href='#' style={{color: '#2bbbad', fontStyle: 'italic'}}
                       onClick={() => this.setState({editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(rev.contents)))}) }
                     >
                       {idx + 1}/ {dateStr}
