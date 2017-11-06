@@ -1,6 +1,6 @@
 # // \\/ /\ A P O R D O C S
 wavey text editor intended for collaboration.
-![GIFS](https://j.gifs.com/L88Rpp.gif)
+![GIFS](gifs/GIFS.gif)
 
 ### t e c h n o l o g i e s
 - real-time, collaborative editing via **SocketIO**
@@ -17,4 +17,4 @@ wavey text editor intended for collaboration.
 - rapidly navigate through documents with **Search Bar** that highlights keywords
 ![search](https://j.gifs.com/gLLPN9.gif)
 - "never forget" with **Revision History** that manages and retrieves previous versions
-![revision](https://j.gifs.com/qYY993.gif)
+![revision](gifs/revision.gif)
