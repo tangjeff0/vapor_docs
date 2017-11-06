@@ -1,7 +1,7 @@
 # // \\/ /\ A P O R D O C S
 wavey text editor intended for collaboration.
 
-![vapordocs-1](https://gifs.com/gif/part1-OyyRLY)
+![vapordocs-1](https://j.gifs.com/OyyRLY.gif)
 
 ### t e c h n o l o g i e s
 - real-time, collaborative editing that displays other users' cursors and selections via **SocketIO**
@@ -12,6 +12,6 @@ wavey text editor intended for collaboration.
 
 ### f e a t u r e s
 - auto-generate **Outline** through detection of bolded, large text
-![vapordocs-2](https://gifs.com/gif/vapordocs-2-4RRJVV)
+![vapordocs-2](https://j.gifs.com/4RRJVV.gif)
 - rapidly navigate through documents with **Search Bar** that highlights keywords
 - "never forget" with **Revision History** that manages and retrieves previous versions
