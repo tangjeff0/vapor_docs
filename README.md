@@ -11,7 +11,7 @@ wavey text editor intended for collaboration.
 
 ### f e a t u r e s
 - see  other users' cursors and selections in real-time
-![teamwork](https://j.gifs.com/JqqR9l.gif)
+![teamwork](https://j.gifs.com/322Gn9.gif)
 - auto-generate **Outline** through detection of bolded, large text
 ![outline](gifs/outline.gif)
 - rapidly navigate through documents with **Search Bar** that highlights keywords
