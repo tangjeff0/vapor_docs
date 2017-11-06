@@ -241,9 +241,9 @@ class MyEditor extends React.Component {
         </Modal>
 
         <Row className="title-row">
-          <Input className="title-input" s={6} name="title" label={this.state.title ? null : "Title"} value={this.state.title} onChange={this.handleInputChange}/>
+          <Input className="title-input" s={6} name="title" label={this.state.title ? null : "t i t l e"} value={this.state.title} onChange={this.handleInputChange}/>
           <Button onClick={() => $('#collabModal').modal('open')} waves='light' className="save-doc">i n v i t e<Icon left>group_add</Icon></Button>
-          <Input name="searchTerm" onChange={this.handleInputChange} value={this.state.searchTerm} label="s e a r c h" validate><Icon>search</Icon></Input>
+          <Input className="title-input" name="searchTerm" onChange={this.handleInputChange} value={this.state.searchTerm} label="s e a r c h" validate><Icon>search</Icon></Input>
         </Row>
 
         <div className="RichEditor-root">
@@ -262,7 +262,7 @@ class MyEditor extends React.Component {
             onClick={this.focus}
           >
             {_.map(this.state.collabObj, (val, key) => {
-              /* console.log("val", val); */
+              console.log("val", val);
               if(val) {
                 if(val.hasOwnProperty('top')) {
                   if(val.left !== val.right) {

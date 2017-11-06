@@ -33,13 +33,13 @@ class StyleButton extends React.Component {
       return (
         <Icon>format_align_left</Icon>
       );
-    case 'Right-Align':
-      return (
-        <Icon>format_align_right</Icon>
-      );
     case 'Center-Align':
       return (
         <Icon>format_align_center</Icon>
+      );
+    case 'Right-Align':
+      return (
+        <Icon>format_align_right</Icon>
       );
     case 'OL':
       return (
