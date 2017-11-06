@@ -11,6 +11,10 @@ wavey text editor intended for collaboration.
 
 ### f e a t u r e s
 - auto-generate **Outline** through detection of bolded, large text
-![outline](outline480small.gif)
+![outline](gifs/outline480original.gif)
 - rapidly navigate through documents with **Search Bar** that highlights keywords
+![search](gifs/search480small.gif)
+![search](gifs/search480original.gif)
 - "never forget" with **Revision History** that manages and retrieves previous versions
+![revision](gifs/revision480small.gif)
+![revision](gifs/revision480original.gif)
