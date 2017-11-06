@@ -14,9 +14,7 @@ class App extends React.Component {
       <div>
         <Route exact path="/" component={Home} />
         <Route path="/newEditor" component={EditorPage} />
-        <Route path="/doc/:docId" render={(props) => {
-          return <EditorPage docId={props.match.params.docId} />;
-        }} />
+        <Route path="/doc/:docId" render={props => <EditorPage docId={props.match.params.docId} /> } />
       </div>
     );
   }

@@ -85,23 +85,19 @@ class Home extends React.Component {
           <Button onClick={this.logoutUser} waves='light' className='blue darken-2' style={{alignSelf: 'flex-start', position: 'absolute', marginLeft: '20px',  marginTop: '20px'}}>l o g o u t<Icon left>navigate_before</Icon></Button>
           <h2 style={{color: '#1976d2', fontStyle: 'italic'}} >// <b>\/ /\</b> P O R D O C S </h2>
           <div>
-          <Link to="/newEditor"><Button floating large className='blue darken-2' waves='light' icon='add'>Create a new document</Button></Link>
+            <Link to="/newEditor"><Button floating large className='blue darken-2' waves='light' icon='add'>Create a new document</Button></Link>
           </div>
           <div className="doc-container">
-            {this.state.docs.map(doc => {
-
-              return (
-                <p key={doc._id} >
-                  <a href='#' style={{fontStyle: 'italic', color:'#31bfb4', fontSize: '2em'}} onClick={() => {
-                    this.setState({docId: doc._id});
-                    $('#docPasswordModal').modal('open');
-                  }}>
-                    ~> {doc.title}
-                  </a>
-                </p>
-              );
-
-            })}
+            {this.state.docs.map((doc, idx) => (
+              <p key={doc._id}>
+                <a href='#' style={{fontStyle: 'italic', color: idx % 2 === 0 ? '#31bfb4' : null, fontSize: '2em'}} onClick={() => {
+                  this.setState({docId: doc._id});
+                  $('#docPasswordModal').modal('open');
+                }}>
+                  ~> {doc.title}
+                </a>
+              </p>
+            ))}
           </div>
 
         <Modal

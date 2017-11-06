@@ -2,8 +2,8 @@ import React from 'react';
 import StyleButton from './StyleButton';
 const BLOCK_TYPES = [
   {label: 'Left-Align', style: 'left'},
-  {label: 'Right-Align', style: 'right'},
   {label: 'Center-Align', style: 'center'},
+  {label: 'Right-Align', style: 'right'},
   {label: 'OL', style: 'ordered-list-item'},
   {label: 'UL', style: 'unordered-list-item'}
 ];

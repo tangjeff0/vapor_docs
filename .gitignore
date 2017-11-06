@@ -1,4 +1,4 @@
-
+tmp
 node_modules
 !build/styles.css
 !build/index.*

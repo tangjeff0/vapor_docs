@@ -6,7 +6,8 @@ import FontSizeDropDown from './FontSizeDropDown';
 const INLINE_STYLES = [
   {label: 'Bold', style: 'BOLD'},
   {label: 'Italic', style: 'ITALIC'},
-  {label: 'Underline', style: 'UNDERLINE'}
+  {label: 'Underline', style: 'UNDERLINE'},
+  {label: 'Strikethrough', style: 'STRIKETHROUGH'},
 ];
 
 const InlineStyleControls = (props) => {
