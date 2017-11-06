@@ -13,5 +13,8 @@ wavey text editor intended for collaboration.
 - see  other users' cursors and selections in real-time
 ![teamwork](https://j.gifs.com/JqqR9l.gif)
 - auto-generate **Outline** through detection of bolded, large text
+![outline](gifs/outline.gif)
 - rapidly navigate through documents with **Search Bar** that highlights keywords
+![search](https://j.gifs.com/gLLPN9.gif)
 - "never forget" with **Revision History** that manages and retrieves previous versions
+![revision](https://j.gifs.com/qYY993.gif)
