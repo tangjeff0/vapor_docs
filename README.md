@@ -10,7 +10,7 @@ wavey text editor intended for collaboration.
 - JSON API backend created with **Mongo**, **Express**; user login and registration managed by **PassportJS**
 
 ### f e a t u r e s
-- see  other users' cursors and selections in real-time
+- see other users' **Cursors** and **Selections** in real-time
 ![teamwork](gifs/teamwork.gif)
 - auto-generate **Outline** through detection of bolded, large text
 ![outline](gifs/outline.gif)
