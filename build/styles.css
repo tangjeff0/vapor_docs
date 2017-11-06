@@ -76,8 +76,8 @@ input.title-input {
   flex-direction: column;
   background-image: url("https://media.giphy.com/media/3o7btZuizQLonHslC8/giphy.gif");
 	background-repeat: repeat;
-  background-size: 450px auto;
-  background-position: 55% 100%;
+  background-size: 440px auto;
+  background-position: 45% 100%;
   position: fixed;
   width: 100%;
   height: 100%;
@@ -152,6 +152,11 @@ ul > li {
 .bottom-buttons {
   background-color: #1976d2;
   margin: 20px 0 0 50px;
+}
+
+.doc-container {
+  align-self: flex-start;
+  padding-left: 130px;
 }
 
 .save-doc {

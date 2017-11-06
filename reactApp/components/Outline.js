@@ -23,10 +23,10 @@ const Outline = (props) => {
     trigger={<Button className='bottom-buttons'><Icon left>sort</Icon>o u t l i n e</Button>}
       options={{ closeOnClick: true }}
     >
-      <h4 style={{marginLeft: '20px', color: '#2bbbad', fontStyle: 'italic'}}>O U T L I N E</h4>
+      <h4 style={{marginLeft: '20px', fontStyle: 'italic', color: '#1976d2'}}>O U T L I N E</h4>
       {headers.map((header, idx) => (
         <SideNavItem key={header + idx}>
-          <h5 style={{fontStyle: 'italic'}}className='blue-text text-lighten-2'>
+          <h5 style={{fontStyle: 'italic', color: '#2bbbad'}}>
             {idx + 1}/ {header}
           </h5>
         </SideNavItem>
