@@ -1,5 +1,7 @@
 # // \\/ /\ A P O R D O C S
-MERN (Mongo, Express, React, Node) rich text editor intended for collaboration
+wavey text editor intended for collaboration.
+
+![demo](./demo/demo720.gif)
 
 ### t e c h n o l o g i e s
 - real-time, collaborative editing that displays other users' cursors and selections via **SocketIO**
