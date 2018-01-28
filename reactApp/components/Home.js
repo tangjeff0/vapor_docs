@@ -27,7 +27,7 @@ class Home extends React.Component {
     const objUser = JSON.parse(localStorage.getItem('user'));
     this.setState({user: objUser || null});
     if (!this.state.mongoStore && objUser) {
-      axios.post('http://localhost:3000/login', objUser)
+      axios.post(localStorage.getItem('url') + '/login', objUser) // XXX
       .then(resp => {
         this.setState({docs: resp.data.docs, mongoStore: true});
       });
@@ -44,7 +44,7 @@ class Home extends React.Component {
   }
   
   loginUser() {
-    axios.post('http://localhost:3000' + '/login', this.state)
+    axios.post(localStorage.getItem('url') + '/login', this.state) // XXX
     .then(resp => {
       if(resp.data.user) {
         const strUser = JSON.stringify(resp.data.user);
@@ -55,7 +55,7 @@ class Home extends React.Component {
   }
 
   logoutUser() {
-    axios.get('http://localhost:3000' + '/logout')
+    axios.get(localStorage.getItem('url') + '/logout') // XXX
     .then(resp => {
       localStorage.setItem('user', null);
       this.setState({user: null});
@@ -63,7 +63,7 @@ class Home extends React.Component {
   }
 
   checkDocPassword() {
-    axios.post('http://localhost:3000' + '/checkDocPassword', {
+    axios.post(localStorage.getItem('url') + '/checkDocPassword', { // XXX
       docId: this.state.docId,
       docPassword: this.state.docPassword,
     })

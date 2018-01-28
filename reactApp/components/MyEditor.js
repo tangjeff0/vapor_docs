@@ -122,7 +122,7 @@ class MyEditor extends React.Component {
   }
 
   getDoc() {
-    axios.get('http://localhost:3000/doc/' + this.props.docId)
+    axios.get(localStorage.getItem('url') + '/' + this.props.docId) // XXX
     .then(resp => {
       const parsed = JSON.parse(resp.data.doc.contents);
       const newEditorState = convertFromRaw(parsed);
@@ -160,7 +160,7 @@ class MyEditor extends React.Component {
       $('#saveModal').modal('open');
     }
     else {
-      axios.put('http://localhost:3000/doc/' + this.state.docId, {
+      axios.put(localStorage.getItem('url') + '/' + this.state.docId, { // XXX
         contents: JSON.stringify(convertToRaw(this.state.editorState.getCurrentContent())),
         title: this.state.title,
       })
@@ -174,7 +174,7 @@ class MyEditor extends React.Component {
   }
 
   saveModal() {
-    axios.post('http://localhost:3000/doc/new', {
+    axios.post(localStorage.getItem('url') + '/doc/new', { // XXX
       password: this.state.password,
       title: this.state.title,
       contents: JSON.stringify(convertToRaw(this.state.editorState.getCurrentContent())),
@@ -208,7 +208,7 @@ class MyEditor extends React.Component {
   }
 
   addCollab() {
-    axios.post('http://localhost:3000/' + 'addCollab', {
+    axios.post(localStorage.getItem('url') + '/addCollab', { // XXX
       docId: this.state.docId,
       newCollab: this.state.newCollab,
     })

@@ -10,6 +10,7 @@ class App extends React.Component {
   }
 
   render() {
+    localStorage.setItem("url", "https://vapordocs.herokuapp.com");
     return (
       <div>
         <Route exact path="/" component={Home} />

@@ -7,15 +7,13 @@ import io from 'socket.io-client';
 class EditorPage extends React.Component {
   constructor(props) {
     super(props);
-    /* const socket = io("http://10.2.106.91:3000/"); */
-    const socket = io("http://localhost:3000/");
+    const socket = io(localStorage.getItem('url')); // XXX
     this.state = {
       socket
     };
 
   }
   componentDidMount() {
-    console.log("this.state socket", this.state.socket);
     this.state.socket.emit('connection', this.props.docId);
   }
   render() {
