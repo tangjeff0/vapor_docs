@@ -1,6 +1,6 @@
 # // \\/ /\ A P O R D O C S
 
-[Download and try for yourself!](https://d7o5z8v23ot3e.cloudfront.net/#/products)
+### [Download and try for yourself!](https://d7o5z8v23ot3e.cloudfront.net/#/products)
 
 wavey text editor intended for collaboration.
 ![GIFS](gifs/GIFS.gif)
