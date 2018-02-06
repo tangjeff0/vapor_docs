@@ -1,6 +1,6 @@
 # // \\/ /\ A P O R D O C S
 
-## [Download and try it for yourself!](https://d7o5z8v23ot3e.cloudfront.net/#/products)
+## [~ D O W N L O A D ~](https://d7o5z8v23ot3e.cloudfront.net/#/products)
 
 wavey text editor intended for collaboration.
 ![GIFS](gifs/GIFS.gif)
@@ -22,4 +22,4 @@ wavey text editor intended for collaboration.
 - "never forget" with **Revision History** that manages and retrieves previous versions
 ![revision](gifs/revision.gif)
 
-## [Download and try it for yourself!](https://d7o5z8v23ot3e.cloudfront.net/#/products)
+## [~ D O W N L O A D ~](https://d7o5z8v23ot3e.cloudfront.net/#/products)
