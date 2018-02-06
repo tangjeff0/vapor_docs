@@ -4,31 +4,39 @@
   "description": "A feature-rich collaborative text editor focused on a e s t h e t i c s",
   "build": {
     "appId": "com.electron.808069",
+    "productName": "V A P O R D O C S",
+    "files": [
+      "build/**/*",
+      "node_modules/**/*",
+      "main.js"
+    ],
     "mac": {
       "category": "public.app-category.Application"
+    },
+    "linux": {
+      "category": "Office"
+    },
+    "win": {
+      "icon": "build/icon.ico"
     }
   },
+  "homepage": "./",
   "main": "main.js",
   "scripts": {
-    "dev": "concurrently -k \"npm run devWebpack\" \"npm run devApp\" \"npm run devServer\"",
+    "devFront": "concurrently -k \"npm run devWebpack\" \"npm run devApp\"",
     "devWebpack": "webpack-dev-server --content-base build/",
     "devApp": "electron main.js --dev",
-    "devServer": "nodemon --watch backend backend/server.js",
     "webpack": "webpack",
-    "prodWebpack": "webpack -p",
     "start": "electron main.js",
-    "server": "node backend/server.js",
-    "dist": "electron-builder",
-    "postinstall": "electron-builder install-app-deps",
-    "test": "mocha --timeout 5000 --exit"
+    "dist": "electron-builder"
   },
   "repository": "https://github.com/andywong418/vapour_docs",
   "keywords": [
     "aesthetics",
+    "a e s t h e t i c",
     "vaporwave",
     "yung lean",
-    "biohacking",
-    "nikita bondarenko"
+    "biohacking"
   ],
   "author": "tangsauce",
   "license": "MIT",
@@ -47,24 +55,16 @@
     "eslint-plugin-react": "^5.2.2",
     "loglevel": "^1.4.1",
     "mocha": "^4.0.1",
-    "nodemon": "^1.11.0",
-    "webpack": "^2.7.0",
+    "webpack": "^3.10.0",
     "webpack-dev-server": "^2.6.0"
   },
   "dependencies": {
     "axios": "^0.17.0",
     "body-parser": "^1.18.2",
-    "connect-mongo": "^2.0.0",
-    "cookie-parser": "^1.4.3",
     "draft-js": "^0.10.4",
-    "express": "^4.15.3",
-    "express-session": "^1.15.6",
     "findandreplacedomtext": "^0.4.5",
     "immutable": "^3.8.2",
     "jquery": "^3.2.1",
-    "mongoose": "^4.12.5",
-    "passport": "^0.4.0",
-    "passport-local": "^1.0.0",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-materialize": "^1.0.16",

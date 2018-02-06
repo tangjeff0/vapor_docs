@@ -2,6 +2,8 @@
 wavey text editor intended for collaboration.
 ![GIFS](gifs/GIFS.gif)
 
+- [Download and try for yourself!](https://d7o5z8v23ot3e.cloudfront.net/#/products)
+
 ### t e c h n o l o g i e s
 - real-time, collaborative editing via **SocketIO**
 - client-side routing via **React Electron** + **React MemoryRouter** + **Redux**, bundled with **WebPack**

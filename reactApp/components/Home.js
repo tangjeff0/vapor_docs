@@ -42,7 +42,7 @@ class Home extends React.Component {
       [name]: value
     });
   }
-  
+
   loginUser() {
     axios.post(localStorage.getItem('url') + '/login', this.state) // XXX
     .then(resp => {
@@ -81,7 +81,7 @@ class Home extends React.Component {
   render() {
     if (this.state.user) {
       return (
-        <div className="container loggedin-homepage">
+        <div className="loggedin-homepage">
           <Button onClick={this.logoutUser} waves='light' className='blue darken-2' style={{alignSelf: 'flex-start', position: 'absolute', marginLeft: '20px',  marginTop: '20px'}}>l o g o u t<Icon left>navigate_before</Icon></Button>
           <h2 style={{color: '#1976d2', fontStyle: 'italic'}} >// <b>\/ /\</b> P O R D O C S </h2>
           <div>
@@ -114,12 +114,12 @@ class Home extends React.Component {
         >
           <Input onChange={this.handleInputChange} value={this.state.docPassword} name="docPassword" type="password" label="p a s s w o r d" s={12} />
         </Modal>
-
         </div>
       );
     }
+
     return (
-      <div className="container home-page">
+      <div className="home-page">
         <div className="color-overlay"></div>
         <div style={{color: 'white', zIndex: 4, textAlign: 'center'}}>
         <h2 style={{color: 'pink', fontStyle: 'italic'}}> // <b>\/ /\</b> P O R D O C S </h2>
@@ -131,7 +131,6 @@ class Home extends React.Component {
         </div>
       </div>
     );
-
   }
 }
 

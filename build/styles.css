@@ -2,6 +2,10 @@
   font-family: 'Times New Roman';
 }
 
+/* .container { */
+/*   width: 1440px; */
+/* } */
+
 input {
   border-bottom: 1px solid #1976d2 !important;
 }

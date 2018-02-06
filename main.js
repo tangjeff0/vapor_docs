@@ -15,7 +15,7 @@ let mainWindow
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 1000, height: 1000});
+  mainWindow = new BrowserWindow({width: 1440, height: 900});
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
@@ -23,6 +23,11 @@ function createWindow () {
     protocol: 'file:',
     slashes: true
   }))
+  const tmp = url.format({
+    pathname: path.join(__dirname, 'build', DEV_MODE ? 'index.dev.html' : 'index.html'),
+    protocol: 'file:',
+    slashes: true
+  })
 
   // Open the DevTools.
   if (DEV_MODE) {
