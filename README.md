@@ -1,6 +1,6 @@
 # // \\/ /\ A P O R D O C S
 
-## [~ D O W N L O A D ~](https://d7o5z8v23ot3e.cloudfront.net/#/products)
+## [~ D O W N L O A D ~](http://www.tangjeff.com/#/)
 
 wavey text editor intended for collaboration.
 ![GIFS](gifs/GIFS.gif)
@@ -25,4 +25,4 @@ wavey text editor intended for collaboration.
 
 ### [b a c k e n d](https://github.com/tangsauce/vapor-backend)
 
-## [~ D O W N L O A D ~](https://d7o5z8v23ot3e.cloudfront.net/#/products)
+## [~ D O W N L O A D ~](http://www.tangjeff.com/#/)
