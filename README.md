@@ -1,8 +1,8 @@
-# // \\/ /\ A P O R D O C S
+# \\/ /\ A P O R D O C S
 
-## [~ D O W N L O A D ~](http://www.tangjeff.com/#/)
+> originally packaged as an Electron app with a real-time collaboration. now just a front-end for your aesthetic pleasure
 
-wavey text editor intended for collaboration.
+wavey text editor intended for collaboration
 ![GIFS](gifs/GIFS.gif)
 
 ### t e c h n o l o g i e s
@@ -21,8 +21,3 @@ wavey text editor intended for collaboration.
 ![search](https://j.gifs.com/gLLPN9.gif)
 - "never forget" with **Revision History** that manages and retrieves previous versions
 ![revision](gifs/revision.gif)
-
-
-### [b a c k e n d](https://github.com/tangsauce/vapor-backend)
-
-## [~ D O W N L O A D ~](http://www.tangjeff.com/#/)
