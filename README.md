@@ -1,4 +1,4 @@
-> originally packaged as an Electron app with a real-time collaboration. now just a front-end for your aesthetic pleasure
+> originally packaged as a full-stack Electron app with persistent storage and real-time colloboration. now just a front-end for your aesthetic pleasure
 
 # \\/ /\ P O R D O C S
 
