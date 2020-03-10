@@ -1,6 +1,6 @@
-# \\/ /\ A P O R D O C S
-
 > originally packaged as an Electron app with a real-time collaboration. now just a front-end for your aesthetic pleasure
+
+# \\/ /\ P O R D O C S
 
 wavey text editor intended for collaboration
 ![GIFS](gifs/GIFS.gif)
