@@ -43,23 +43,43 @@ class Home extends React.Component {
     });
   }
 
-  loginUser() {
-    axios.post(localStorage.getItem('url') + '/login', this.state) // XXX
-    .then(resp => {
-      if(resp.data.user) {
-        const strUser = JSON.stringify(resp.data.user);
-        localStorage.setItem('user', strUser);
-        this.setState({user: resp.data.user, docs: resp.data.docs});
+  mockLogin() {
+    const resp = {
+      data: {
+        user: 'hello-anon',
+        docs: [
+        ]
       }
-    });
+    };
+    const strUser = JSON.stringify(resp.data.user);
+    localStorage.setItem('user', strUser);
+    this.setState({user: resp.data.user, docs: resp.data.docs});
+  }
+
+  loginUser() {
+    this.mockLogin();
+    // axios.post(localStorage.getItem('url') + '/login', this.state) // XXX
+    // .then(resp => {
+    //   if(resp.data.user) {
+    //     const strUser = JSON.stringify(resp.data.user);
+    //     localStorage.setItem('user', strUser);
+    //     this.setState({user: resp.data.user, docs: resp.data.docs});
+    //   }
+    // });
+  }
+
+  mockLogout() {
+    localStorage.setItem('user', null);
+    this.setState({user: null});
   }
 
   logoutUser() {
-    axios.get(localStorage.getItem('url') + '/logout') // XXX
-    .then(resp => {
-      localStorage.setItem('user', null);
-      this.setState({user: null});
-    });
+    this.mockLogout();
+    // axios.get(localStorage.getItem('url') + '/logout') // XXX
+    // .then(resp => {
+    //   localStorage.setItem('user', null);
+    //   this.setState({user: null});
+    // });
   }
 
   checkDocPassword() {
@@ -124,8 +144,8 @@ class Home extends React.Component {
         <div style={{color: 'white', zIndex: 4, textAlign: 'center'}}>
         <h2 style={{color: 'pink', fontStyle: 'italic'}}> // <b>\/ /\</b> P O R D O C S </h2>
         <Row>
-          <Input onChange={this.handleInputChange} value={this.state.username} name="username" type="text" label="u s e r n a m e" s={12} />
-          <Input onChange={this.handleInputChange} value={this.state.password} name="password" type="password" label="p a s s w o r d" s={12} />
+          <Input onChange={this.handleInputChange} value={this.state.username} name="username" type="text" label="a n y // u s e r n a m e" s={12} />
+          <Input onChange={this.handleInputChange} value={this.state.password} name="password" type="text" label="w i l l // d o" s={12} />
         </Row>
         <Button onClick={this.loginUser} className='blue darken-2' waves='light'>l o g i n<Icon left>exit_to_app</Icon></Button>
         </div>

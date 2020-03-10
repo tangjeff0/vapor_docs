@@ -12,7 +12,7 @@ class App extends React.Component {
   render() {
     localStorage.setItem("url", "https://vapordocs.herokuapp.com");
     return (
-      <div>
+      <div style={{ height: "100%"}} >
         <Route exact path="/" component={Home} />
         <Route path="/newEditor" component={EditorPage} />
         <Route path="/doc/:docId" render={props => <EditorPage docId={props.match.params.docId} /> } />

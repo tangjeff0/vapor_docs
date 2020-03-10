@@ -2,9 +2,18 @@
   font-family: 'Times New Roman';
 }
 
-/* .container { */
-/*   width: 1440px; */
-/* } */
+body, #root, .container {
+  height: 100% !important
+}
+
+html {
+  width: 100%;
+  height: 100%;
+}
+
+.container {
+  max-width: 100% !important;
+}
 
 input {
   border-bottom: 1px solid #1976d2 !important;
@@ -40,21 +49,21 @@ input.title-input {
   color: #1976d2; /* blue */
 }
 
-.modal-content, .modal-footer {
-  background-image: url("https://thumbs.gfycat.com/DisastrousColorlessHummingbird-size_restricted.gif");
-	background-repeat: no-repeat;
+.side-nav {
+  background-image: url("luke.gif"); /* https://78.media.tumblr.com/38442709125cb397cbaa923621fce722/tumblr_oy5glpe1KN1wzlvpdo1_500.gif */
+  background-repeat: no-repeat;
   background-size: cover;
 }
 
-.side-nav {
-  background-image: url("https://78.media.tumblr.com/38442709125cb397cbaa923621fce722/tumblr_oy5glpe1KN1wzlvpdo1_500.gif");
-	background-repeat: no-repeat;
+.modal-content, .modal-footer {
+  background-image: url("skyscraper.gif");
+  background-repeat: no-repeat;
   background-size: cover;
 }
 
 .revision-container {
-  background-image: url("https://thumbs.gfycat.com/DisastrousColorlessHummingbird-size_restricted.gif");
-	background-repeat: no-repeat;
+  background-image: url("skyscraper.gif");
+  background-repeat: no-repeat;
   background-size: cover;
 }
 
@@ -63,8 +72,8 @@ input.title-input {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  background-image: url("https://thumbs.gfycat.com/DisastrousColorlessHummingbird-size_restricted.gif");
-	background-repeat: no-repeat;
+  background-image: url("skyscraper.gif"); /* https://thumbs.gfycat.com/DisastrousColorlessHummingbird-size_restricted.gif */
+  background-repeat: round;
   background-size: cover;
   background-color: rgba(0,0,0,0.6);
   position: absolute;
@@ -78,8 +87,8 @@ input.title-input {
   display: flex;
   align-items: center;
   flex-direction: column;
-  background-image: url("https://media.giphy.com/media/3o7btZuizQLonHslC8/giphy.gif");
-	background-repeat: repeat;
+  background-image: url("summer.gif"); /* https://media.giphy.com/media/3o7btZuizQLonHslC8/giphy.gif */
+  background-repeat: repeat;
   background-size: 440px auto;
   background-position: 45% 100%;
   position: fixed;
@@ -90,26 +99,23 @@ input.title-input {
 }
 .color-overlay {
   position: absolute;
-   top: 0;
-   left: 0;
-   width: 100%;
-   height: 100%;
-   background-color: black;
-   opacity: 0.5;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  opacity: 0.5;
 }
 
 .EditorPage {
-  background-image: url("http://gph.to/2h1uuAD");
-	background-repeat: no-repeat;
+  background-image: url("waves.gif"); /* https://media.giphy.com/media/ymiKd7838laww/giphy.gif */
+  background-repeat: no-repeat;
   background-size: cover;
   background-color: #2bbbad;
   padding-top: 20px;;
   padding-left: 40px;
-  position: absolute;
   width: 100%;
   height: 100%;
-  top: 0;
-  left: 0;
 }
 
 .RichEditor-root {
@@ -131,8 +137,8 @@ ul {
   margin-left: 30px;
 }
 ul > li {
-    color: black;
-    list-style-type: circle !important;
+  color: black;
+  list-style-type: circle !important;
 }
 
 .RichEditor-styleButton {
