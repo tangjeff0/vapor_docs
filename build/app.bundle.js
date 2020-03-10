@@ -32907,7 +32907,7 @@ var App = function (_React$Component) {
       localStorage.setItem("url", "https://vapordocs.herokuapp.com");
       return _react2.default.createElement(
         'div',
-        null,
+        { style: { height: "100%" } },
         _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: _Home2.default }),
         _react2.default.createElement(_reactRouterDom.Route, { path: '/newEditor', component: _EditorPage2.default }),
         _react2.default.createElement(_reactRouterDom.Route, { path: '/doc/:docId', render: function render(props) {
@@ -61336,42 +61336,59 @@ var Home = function (_React$Component) {
       this.setState(_defineProperty({}, name, value));
     }
   }, {
+    key: 'mockLogin',
+    value: function mockLogin() {
+      var resp = {
+        data: {
+          user: 'hello-anon',
+          docs: []
+        }
+      };
+      var strUser = JSON.stringify(resp.data.user);
+      localStorage.setItem('user', strUser);
+      this.setState({ user: resp.data.user, docs: resp.data.docs });
+    }
+  }, {
     key: 'loginUser',
     value: function loginUser() {
-      var _this3 = this;
-
-      _axios2.default.post(localStorage.getItem('url') + '/login', this.state) // XXX
-      .then(function (resp) {
-        if (resp.data.user) {
-          var strUser = JSON.stringify(resp.data.user);
-          localStorage.setItem('user', strUser);
-          _this3.setState({ user: resp.data.user, docs: resp.data.docs });
-        }
-      });
+      this.mockLogin();
+      // axios.post(localStorage.getItem('url') + '/login', this.state) // XXX
+      // .then(resp => {
+      //   if(resp.data.user) {
+      //     const strUser = JSON.stringify(resp.data.user);
+      //     localStorage.setItem('user', strUser);
+      //     this.setState({user: resp.data.user, docs: resp.data.docs});
+      //   }
+      // });
+    }
+  }, {
+    key: 'mockLogout',
+    value: function mockLogout() {
+      localStorage.setItem('user', null);
+      this.setState({ user: null });
     }
   }, {
     key: 'logoutUser',
     value: function logoutUser() {
-      var _this4 = this;
-
-      _axios2.default.get(localStorage.getItem('url') + '/logout') // XXX
-      .then(function (resp) {
-        localStorage.setItem('user', null);
-        _this4.setState({ user: null });
-      });
+      this.mockLogout();
+      // axios.get(localStorage.getItem('url') + '/logout') // XXX
+      // .then(resp => {
+      //   localStorage.setItem('user', null);
+      //   this.setState({user: null});
+      // });
     }
   }, {
     key: 'checkDocPassword',
     value: function checkDocPassword() {
-      var _this5 = this;
+      var _this3 = this;
 
       _axios2.default.post(localStorage.getItem('url') + '/checkDocPassword', { // XXX
         docId: this.state.docId,
         docPassword: this.state.docPassword
       }).then(function (resp) {
-        _this5.setState({ progressBar: true });
+        _this3.setState({ progressBar: true });
         if (resp.data.wasCorrectPassword) {
-          _this5.setState({ lockedDoc: false });
+          _this3.setState({ lockedDoc: false });
         } else {
           // TODO give visual feedback
           console.log('wrong password :(!', resp);
@@ -61383,7 +61400,7 @@ var Home = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _this6 = this;
+      var _this4 = this;
 
       if (this.state.user) {
         return _react2.default.createElement(
@@ -61433,7 +61450,7 @@ var Home = function (_React$Component) {
                 _react2.default.createElement(
                   'a',
                   { href: '#', style: { fontStyle: 'italic', color: idx % 2 === 0 ? '#31bfb4' : null, fontSize: '2em' }, onClick: function onClick() {
-                      _this6.setState({ docId: doc._id });
+                      _this4.setState({ docId: doc._id });
                       $('#docPasswordModal').modal('open');
                     } },
                   '~> ',
@@ -61499,8 +61516,8 @@ var Home = function (_React$Component) {
           _react2.default.createElement(
             _reactMaterialize.Row,
             null,
-            _react2.default.createElement(_reactMaterialize.Input, { onChange: this.handleInputChange, value: this.state.username, name: 'username', type: 'text', label: 'u s e r n a m e', s: 12 }),
-            _react2.default.createElement(_reactMaterialize.Input, { onChange: this.handleInputChange, value: this.state.password, name: 'password', type: 'password', label: 'p a s s w o r d', s: 12 })
+            _react2.default.createElement(_reactMaterialize.Input, { onChange: this.handleInputChange, value: this.state.username, name: 'username', type: 'text', label: 'a n y // u s e r n a m e', s: 12 }),
+            _react2.default.createElement(_reactMaterialize.Input, { onChange: this.handleInputChange, value: this.state.password, name: 'password', type: 'text', label: 'w i l l // d o', s: 12 })
           ),
           _react2.default.createElement(
             _reactMaterialize.Button,
