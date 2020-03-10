@@ -1,4 +1,6 @@
-> originally packaged as a full-stack Electron app with persistent storage and real-time colloboration. now just a front-end for your aesthetic pleasure
+# ~ https://tangjeff0.github.io/vapor_docs/ ~
+
+> originally packaged as a full-stack Electron app with a Mongo backend and websockets for real-time collaboration. now just a front-end for your aesthetic pleasure
 
 # \\/ /\ P O R D O C S
 
