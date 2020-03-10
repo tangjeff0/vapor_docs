@@ -20,9 +20,11 @@
       "icon": "build/icon.ico"
     }
   },
-  "homepage": "./",
+  "homepage": "http://tangjeff0.github.io/vapor_docs",
   "main": "main.js",
   "scripts": {
+    "predeploy": "npm run webpack",
+    "deploy": "gh-pages -d build",
     "devFront": "concurrently -k \"npm run devWebpack\" \"npm run devApp\"",
     "devWebpack": "webpack-dev-server --content-base build/",
     "devApp": "electron main.js --dev",
@@ -53,6 +55,7 @@
     "electron-builder": "^19.55.2",
     "eslint": "^3.0.1",
     "eslint-plugin-react": "^5.2.2",
+    "gh-pages": "^2.2.0",
     "loglevel": "^1.4.1",
     "mocha": "^4.0.1",
     "webpack": "^3.10.0",
