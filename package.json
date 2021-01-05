@@ -62,7 +62,7 @@
     "webpack-dev-server": "^2.6.0"
   },
   "dependencies": {
-    "axios": "^0.17.0",
+    "axios": "^0.21.1",
     "body-parser": "^1.18.2",
     "draft-js": "^0.10.4",
     "findandreplacedomtext": "^0.4.5",
